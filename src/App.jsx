@@ -1,52 +1,42 @@
-import React ,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Navbar1 from "./components/navbar/navbar";
 import Login from "./components/login/login";
 import Signup from "./components/signup/signup";
 import { onAuthStateChanged } from "firebase/auth";
-import { Routes } from 'react-router-dom';
-import { Route } from 'react-router-dom';
-// import {Navigate} from 'react-router-dom'
+import { Routes, Route } from "react-router-dom";
 import Dashboard from "./components/dashboard/dashboard";
 import { author } from "./firebaseconfig";
-// import Landingpage from "./components/landingpage/landingpage";
-// import {AddItem} from './components/additem/additem'
-// import {AddItem} from './components/additem/additem'
-
-
+import GiftIdeas from "./components/giftideas/giftideas";
 
 const App = () => {
-  const [user, setuser] = useState(null)
-  const [loading, setloading] = useState(true)
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const userloggin = onAuthStateChanged(author, (cuurentuser) => {
-      setuser(cuurentuser)
-      setloading(false)
+    const unsubscribe = onAuthStateChanged(author, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
-
-    })
-    return () => userloggin
-  }, [])
-  console.log(user)
   if (loading) {
-    return <h1>loading...</h1>
+    return <h1>Loading...</h1>;
   }
-
 
   return (
     <div>
-
+      {/* Navbar always shows regardless of authentication */}
       <Navbar1 />
       <Routes>
-        <Route path="/signup" element={<Signup />}></Route>
-        <Route path="/login" element={<Login />}></Route>
-        <Route path='/dashboard' element={user?<Dashboard/>:<Navigate to="/login"/>}></Route>
-        {/* <Route path="/giftideas" element={<AddItem/>}></Route> */}
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/giftideas" element={<GiftIdeas />} />
+        <Route path="/" element={<Dashboard/>} />
       </Routes>
-      {/* <Landingpage/> */}
-
-
     </div>
+  );
+};
 
-  )
-}
 export default App;

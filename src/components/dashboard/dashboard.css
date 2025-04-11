@@ -1,74 +1,217 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-  }
-  
-  .header {
-    background-color: #333;
-    color: white;
-    padding: 1rem;
-    text-align: center;
-  }
-  
-  .header nav ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .header nav ul li {
-    display: inline;
-    margin: 0 1rem;
-  }
-  
-  .header nav ul li a {
-    color: white;
-    text-decoration: none;
-  }
-  
-  .wishlist {
+/* dashboard.css - Updated styling */
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+.dashboard-header {
+  display: none; /* Hidden on desktop, only shown on mobile */
+}
+
+/* Sidebar styling */
+.sidebar {
+  width: 30%;
+  background-color: #f8f9fa;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-title {
+  background-color: #8e44ad; /* Purple header for sidebar */
+  color: white;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-title h3 {
+  margin: 0;
+}
+
+.close-sidebar {
+  display: none; /* Only shown on mobile */
+}
+
+.sidebar-nav {
+  flex: 1;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav li {
+  border-bottom: 1px solid #ddd;
+}
+
+.sidebar-nav a {
+  display: block;
+  padding: 1rem;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.sidebar-nav a:hover {
+  background-color: #e9ecef;
+}
+
+.sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid #ddd;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #f1f3f5;
+}
+
+/* Main content area */
+.dashboard-content {
+  flex: 1;
+  width: 70%;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.wishlist-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.wishlist-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.wishlist-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.wishlist-card h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.view-btn {
+  background-color: #8e44ad;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.add-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #ddd;
+  box-shadow: none;
+}
+
+.add-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #8e44ad;
+  color: white;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .dashboard-header {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    align-items: center;
     padding: 1rem;
-  }
-  
-  .wishlist-item {
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin: 1rem;
-    padding: 1rem;
-    width: 200px;
-    text-align: center;
-  }
-  
-  .wishlist-item img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-  }
-  
-  .wishlist-item h3 {
-    margin: 0.5rem 0;
-  }
-  
-  .wishlist-item p {
-    font-size: 0.9rem;
-    color: #555;
-  }
-  
-  .wishlist-item a {
-    display: inline-block;
-    margin-top: 0.5rem;
-    padding: 0.5rem 1rem;
-    background-color: #007bff;
+    background-color: #8e44ad;
     color: white;
-    text-decoration: none;
-    border-radius: 5px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
   }
-  
-  .wishlist-item a:hover {
-    background-color: #0056b3;
+
+  .menu-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
   }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 80%;
+    max-width: 300px;
+    z-index: 200;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .close-sidebar {
+    display: block;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 150;
+  }
+
+  .dashboard-content {
+    width: 100%;
+    margin-top: 60px; /* Space for the fixed header */
+  }
+}
