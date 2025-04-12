@@ -1,265 +1,304 @@
-// import React, { useState, useEffect } from 'react';
-// import './GiftIdeas.css'; // Separate CSS file
-
-// const GiftIdeas = () => {
-//   const [gifts, setGifts] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-
-//   useEffect(() => {
-//     const fetchGiftIdeas = async () => {
-//       try {
-//         const response = await fetch(
-//           'https://run.mocky.io/v3/4eadaa11-1478-4dd0-80fb-55a164d38f18'
-//         );
-//         if (!response.ok) {
-//           throw new Error('Failed to fetch gift ideas');
-//         }
-//         const data = await response.json();
-//         setGifts(data);
-//       } catch (err) {
-//         setError(err.message);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchGiftIdeas();
-//   }, []);
-
-//   const handleAddToList = (giftId) => {
-//     // Implement your add to list logic here
-//     console.log(`Added gift ${giftId} to list`);
-//     alert(`Added gift ${giftId} to your wishlist!`);
-//   };
-
-//   if (loading) return <div className="loading">Loading gift ideas...</div>;
-//   if (error) return <div className="error">Error: {error}</div>;
-
-//   return (
-//     <div className="gift-ideas-container">
-//       <h1>Gift Ideas</h1>
-//       <div className="gifts-grid">
-//         {gifts.map((gift) => (
-//           <div key={gift.id} className="gift-card">
-//             <img src={gift.image} alt={gift.name} className="gift-image" />
-//             <div className="gift-details">
-//               <h3>{gift.name}</h3>
-//               <p>{gift.description}</p>
-//               <p className="gift-price">${gift.price}</p>
-//               <button
-//                 onClick={() => handleAddToList(gift.id)}
-//                 className="add-to-list-btn"
-//               >
-//                 Add to List
-//               </button>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default GiftIdeas;
-
-import React, { useState, useEffect } from 'react';
-import { db, ref, onValue } from '../../firebaseconfig';
-import './giftideas.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Button, Card, Container, Row, Col, Form, InputGroup } from "react-bootstrap";
+import Swal from "sweetalert2";
+import "animate.css";
+import { FaSearch, FaFilter, FaTimes } from "react-icons/fa";
 
 const GiftIdeas = () => {
-
-  const [gifts, setGifts] = useState([]); // Initialize as empty array
+  const [data, setData] = useState([]);
+  const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchCategory, setSearchCategory] = useState("");
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    const giftsRef = ref(db, 'gifts');
-    
-    const unsubscribe = onValue(giftsRef, (snapshot) => {
-      try {
-        setLoading(true);
-        const giftsData = snapshot.val();
-        
-        // Convert Firebase object to array
-        const giftsArray = giftsData 
-          ? Object.keys(giftsData).map(key => ({
-              id: key,
-              ...giftsData[key]
-            }))
-          : []; // Fallback to empty array if no data
-
-        setGifts(giftsArray);
-        setError(null);
-      } catch (err) {
-        console.error("Error processing gifts:", err);
-        setError("Failed to load gifts");
-        setGifts([]); // Ensure gifts is always an array
-      } finally {
-        setLoading(false);
-      }
-    });
-
-    return () => unsubscribe();
+    fetchGifts();
   }, []);
 
-  if (loading) return <div className="loading">Loading gifts...</div>;
-  if (error) return <div className="error">{error}</div>;
+  const fetchGifts = () => {
+    setLoading(true);
+    axios.get("http://localhost:4000/gifts")
+      .then(res => {
+        console.log(res.data);
+        setData(res.data);
+        setAllData(res.data);
+        setLoading(false);
+        
+        // Extract unique categories
+        const uniqueCategories = [...new Set(res.data.map(item => item.category))];
+        setCategories(uniqueCategories);
+        
+        // Welcome notification with animation
+        Swal.fire({
+          title: "Gift Ideas Loaded!",
+          icon: "success",
+          showClass: {
+            popup: 'animate__animated animate__fadeInDown'
+          },
+          hideClass: {
+            popup: 'animate__animated animate__fadeOutUp'
+          }
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+        
+        // Error notification
+        Swal.fire({
+          title: "Error!",
+          text: "Could not load gift ideas. Please try again later.",
+          icon: "error",
+          showClass: {
+            popup: 'animate__animated animate__shakeX'
+          }
+        });
+      });
+  };
+
+  const addToWishlist = (giftitem) => {
+    axios.post("http://localhost:4000/your_wishlist", giftitem)
+      .then(() => {
+        Swal.fire({
+          title: "Added to Wishlist!",
+          text: `${giftitem.name} has been added to your wishlist`,
+          icon: "success",
+          showClass: {
+            popup: 'animate__animated animate__bounceIn'
+          },
+          timer: 1500,
+          timerProgressBar: true,
+          toast: true,
+          position: 'top-end'
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        Swal.fire({
+          title: "Error!",
+          text: "Could not add to wishlist. Please try again.",
+          icon: "error",
+          toast: true,
+          position: 'top-end'
+        });
+      });
+  };
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    filterGifts(e.target.value, searchCategory);
+  };
+  
+  // Handle category filter change
+  const handleCategoryChange = (e) => {
+    setSearchCategory(e.target.value);
+    filterGifts(searchTerm, e.target.value);
+  };
+  
+  // Filter gifts based on search term and category
+  const filterGifts = (term, category) => {
+    let filteredResults = [...allData];
+    
+    // Filter by search term
+    if (term) {
+      const lowerCaseTerm = term.toLowerCase();
+      filteredResults = filteredResults.filter(gift => 
+        gift.name.toLowerCase().includes(lowerCaseTerm) || 
+        (gift.brand && gift.brand.toLowerCase().includes(lowerCaseTerm))
+      );
+    }
+    
+    // Filter by category
+    if (category) {
+      filteredResults = filteredResults.filter(gift => 
+        gift.category === category
+      );
+    }
+    
+    setData(filteredResults);
+    
+    // Show animation for filtered results
+    if (filteredResults.length > 0) {
+      const cards = document.querySelectorAll('.gift-card');
+      cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.remove('animate__fadeIn');
+        void card.offsetWidth; // Trigger reflow
+        card.classList.add('animate__fadeIn');
+      });
+    }
+  };
+  
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSearchCategory("");
+    setData(allData);
+    
+    Swal.fire({
+      title: "Filters Cleared",
+      icon: "info",
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+      showClass: {
+        popup: 'animate__animated animate__fadeIn'
+      }
+    });
+  };
+
+  if (loading) {
+    return (
+      <Container className="text-center mt-5">
+        <div className="animate__animated animate__pulse animate__infinite">
+          <h2>Loading awesome gift ideas for you...</h2>
+        </div>
+      </Container>
+    );
+  }
 
   return (
-    <div className="gift-ideas-container">
-      <h1>Gift Ideas</h1>
+    <Container className="py-4">
+      <h1 className="text-center mb-4 animate__animated animate__fadeIn">
+        Gift Ideas For You
+      </h1>
       
-      {gifts.length > 0 ? (
-        <div className="gifts-grid">
-          {gifts.map((gift) => (
-            <div key={gift.id} className="gift-card">
-              <img 
-                src={gift.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'} 
-                alt={gift.name} 
-                className="gift-image" 
+      {/* Search and Filter Section */}
+      <div className="animate__animated animate__fadeIn mb-4">
+        <Row className="g-3 align-items-end">
+          <Col xs={12} md={5}>
+            <InputGroup>
+              <InputGroup.Text>
+                <FaSearch />
+              </InputGroup.Text>
+              <Form.Control
+                placeholder="Search by name or brand..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="animate__animated animate__fadeIn"
               />
-              <div className="gift-details">
-                <h3>{gift.name}</h3>
-                <p>{gift.description}</p>
-                <p className="gift-price">${parseFloat(gift.price || 0).toFixed(2)}</p>
-                <button
-                  onClick={() => handleAddToList(gift.id)}
-                  className="add-to-list-btn"
+              {searchTerm && (
+                <Button 
+                  variant="outline-secondary" 
+                  onClick={() => {
+                    setSearchTerm("");
+                    filterGifts("", searchCategory);
+                  }}
                 >
-                  Add to List
-                </button>
-              </div>
+                  <FaTimes />
+                </Button>
+              )}
+            </InputGroup>
+          </Col>
+          
+          <Col xs={12} md={5}>
+            <InputGroup>
+              <InputGroup.Text>
+                <FaFilter />
+              </InputGroup.Text>
+              <Form.Select
+                value={searchCategory}
+                onChange={handleCategoryChange}
+                className="animate__animated animate__fadeIn"
+              >
+                <option value="">All Categories</option>
+                {categories.map((category, index) => (
+                  <option key={index} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </Form.Select>
+            </InputGroup>
+          </Col>
+          
+          <Col xs={12} md={2}>
+            <div className="d-grid gap-2">
+              <Button 
+                variant="outline-danger" 
+                onClick={clearFilters}
+                className="animate__animated animate__fadeIn"
+                disabled={!searchTerm && !searchCategory}
+              >
+                Clear Filters
+              </Button>
             </div>
-          ))}
+          </Col>
+        </Row>
+      </div>
+      
+      <Button 
+        variant="outline-secondary" 
+        className="mb-4 animate__animated animate__fadeInLeft"
+        onClick={fetchGifts}
+      >
+        Refresh Gift Ideas
+      </Button>
+      
+      {/* Results counter */}
+      <p className="text-muted mb-3 animate__animated animate__fadeIn">
+        Showing {data.length} of {allData.length} gifts
+        {(searchTerm || searchCategory) && " (filtered)"}
+      </p>
+      
+      <Row xs={1} md={2} lg={3} className="g-4">
+        {data.map((gift, index) => (
+          <Col key={gift.id || index}>
+            <Card 
+              className="h-100 animate__animated animate__fadeIn gift-card"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <Card.Img 
+                variant="top" 
+                src={gift.imageUrl} 
+                className="animate__animated animate__zoomIn"
+                style={{ height: "300px", objectFit: "cover" }}
+              />
+              <Card.Body>
+                <Card.Title className="animate__animated animate__fadeIn">{gift.name}</Card.Title>
+                <Card.Text className="text-muted animate__animated animate__fadeIn">
+                  {gift.brand}
+                </Card.Text>
+                {gift.category && (
+                  <Card.Text className="text-muted animate__animated animate__fadeIn">
+                    <small>Category: {gift.category}</small>
+                  </Card.Text>
+                )}
+                <Card.Text className="fw-bold animate__animated animate__fadeIn">
+                  ${gift.price}
+                </Card.Text>
+                <Button 
+                  variant="primary" 
+                  className="animate__animated animate__pulse animate__delay-1s"
+                  onClick={() => addToWishlist(gift)}
+                >
+                  Add To Wishlist
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+      
+      {data.length === 0 && (
+        <div className="text-center mt-5 animate__animated animate__fadeIn">
+          <h3>No gift ideas found matching your search</h3>
+          <p className="text-muted">Try different search terms or clear filters</p>
+          <Button 
+            variant="primary" 
+            className="mt-3 animate__animated animate__heartBeat animate__delay-1s"
+            onClick={clearFilters}
+          >
+            Clear All Filters
+          </Button>
         </div>
-      ) : (
-        <p className="no-gifts">No gifts available yet.</p>
       )}
-    </div>
+    </Container>
   );
 };
 
 export default GiftIdeas;
-
-
-
-
-
-// import React, { useState, useEffect } from 'react';
-// import { db, ref, push, onValue } from './firebaseConfig';
-// import './giftideas.css';
-
-// const GiftIdeas=() => {
-//   const [gifts, setGifts] = useState([]);
-//   const [newGift, setNewGift] = useState({
-//     name: '',
-//     description: '',
-//     price: '',
-//     imageUrl: ''
-//   });
-
-//   // Fetch gifts in real-time
-//   useEffect(() => {
-//     const giftsRef = ref(db, 'gifts');
-    
-//     const unsubscribe = onValue(giftsRef, (snapshot) => {
-//       const giftsData = snapshot.val();
-//       if (giftsData) {
-//         const giftsList = Object.keys(giftsData).map(key => ({
-//           id: key,
-//           ...giftsData[key]
-//         }));
-//         setGifts(giftsList);
-//       } else {
-//         setGifts([]);
-//       }
-//     });
-
-//     return () => unsubscribe();
-//   }, []);
-
-//   const handleAddToList = (giftId) => {
-//     // Add to user's wishlist (separate Firebase path)
-//     const wishlistRef = ref(db, `wishlists/${user.uid}/${giftId}`);
-//     push(wishlistRef, { addedAt: Date.now() })
-//       .then(() => alert('Added to your wishlist!'))
-//       .catch(error => console.error('Error:', error));
-//   };
-
-//   const handleAddNewGift = (e) => {
-//     e.preventDefault();
-//     push(ref(db, 'gifts'), newGift)
-//       .then(() => setNewGift({
-//         name: '',
-//         description: '',
-//         price: '',
-//         imageUrl: ''
-//       }))
-//       .catch(error => alert('Error adding gift: ' + error.message));
-//   };
-
-//   return (
-//     <div className="gift-ideas-container">
-//       <h1>Gift Ideas</h1>
-      
-//       {/* Admin Form - Only show to admins */}
-//       {user?.isAdmin && (
-//         <form onSubmit={handleAddNewGift} className="add-gift-form">
-//           <h3>Add New Gift</h3>
-//           <input
-//             type="text"
-//             placeholder="Gift Name"
-//             value={newGift.name}
-//             onChange={(e) => setNewGift({...newGift, name: e.target.value})}
-//             required
-//           />
-//           <textarea
-//             placeholder="Description"
-//             value={newGift.description}
-//             onChange={(e) => setNewGift({...newGift, description: e.target.value})}
-//             required
-//           />
-//           <input
-//             type="number"
-//             placeholder="Price"
-//             value={newGift.price}
-//             onChange={(e) => setNewGift({...newGift, price: e.target.value})}
-//             required
-//           />
-//           <input
-//             type="url"
-//             placeholder="Image URL"
-//             value={newGift.imageUrl}
-//             onChange={(e) => setNewGift({...newGift, imageUrl: e.target.value})}
-//             required
-//           />
-//           <button type="submit">Add Gift</button>
-//         </form>
-//       )}
-
-//       <div className="gifts-grid">
-//         {gifts.map((gift) => (
-//           <div key={gift.id} className="gift-card">
-//             <img src={gift.imageUrl} alt={gift.name} className="gift-image" />
-//             <div className="gift-details">
-//               <h3>{gift.name}</h3>
-//               <p>{gift.description}</p>
-//               <p className="gift-price">${parseFloat(gift.price).toFixed(2)}</p>
-//               <button
-//                 onClick={() => handleAddToList(gift.id)}
-//                 className="add-to-list-btn"
-//               >
-//                 Add to List
-//               </button>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default GiftIdeas;
-
-

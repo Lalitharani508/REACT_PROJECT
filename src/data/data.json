@@ -1,0 +1,462 @@
+{
+  "gifts": [
+    {
+      "id": "1",
+      "name": "Silk Evening Gown",
+      "category": "dresses",
+      "price": 349.99,
+      "brand": "Valentino",
+      "imageUrl": "https://i.pinimg.com/736x/12/25/4a/12254a77c37f1a12188fe7ab0707d1b2.jpg  "
+    },
+    {
+      "id": "2",
+      "name": "Leather Watch Box",
+      "category": "accessories",
+      "price": 89.99,
+      "brand": "Fossil",
+      "imageUrl": "https://i.pinimg.com/736x/22/27/be/2227be88f1c4f1badc8d14e8d702379a.jpg"
+    },
+    {
+      "id": "3",
+      "name": "Premium Chocolate Gift Set",
+      "category": "food",
+      "price": 45.99,
+      "brand": "Godiva",
+      "imageUrl": "https://i.pinimg.com/736x/cb/3b/84/cb3b8430965b0252da2021259f7e4e96.jpg"
+    },
+    {
+      "id": "4",
+      "name": "Wireless Headphones",
+      "category": "electronics",
+      "price": 249.99,
+      "brand": "Bose",
+      "imageUrl": "https://i.pinimg.com/736x/6e/58/b5/6e58b528f8b8a6fd9e1e9f8287847ff0.jpg"
+    },
+    {
+      "id": "5",
+      "name": "Scented Candle Collection",
+      "category": "home",
+      "price": 59.99,
+      "brand": "Yankee Candle",
+      "imageUrl": "https://example.com/images/home/scented-candle-collection.jpg"
+    },
+    {
+      "id": "6",
+      "name": "Leather Wallet",
+      "category": "accessories",
+      "price": 79.99,
+      "brand": "Coach",
+      "imageUrl": "https://example.com/images/accessories/leather-wallet.jpg"
+    },
+    {
+      "id": "7",
+      "name": "Fitness Smartwatch",
+      "category": "electronics",
+      "price": 199.99,
+      "brand": "Garmin",
+      "imageUrl": "https://example.com/images/electronics/fitness-smartwatch.jpg"
+    },
+    {
+      "id": "8",
+      "name": "Luxury Perfume",
+      "category": "beauty",
+      "price": 120,
+      "brand": "Chanel",
+      "imageUrl": "https://example.com/images/beauty/luxury-perfume.jpg"
+    },
+    {
+      "id": "9",
+      "name": "Crystal Wine Glasses Set",
+      "category": "home",
+      "price": 149.99,
+      "brand": "Waterford",
+      "imageUrl": "https://example.com/images/home/crystal-wine-glasses.jpg"
+    },
+    {
+      "id": "10",
+      "name": "Cashmere Scarf",
+      "category": "clothing",
+      "price": 129.99,
+      "brand": "Burberry",
+      "imageUrl": "https://example.com/images/clothing/cashmere-scarf.jpg"
+    },
+    {
+      "id": "11",
+      "name": "Professional Chef Knife",
+      "category": "kitchen",
+      "price": 189.99,
+      "brand": "Wüsthof",
+      "imageUrl": "https://example.com/images/kitchen/chef-knife.jpg"
+    },
+    {
+      "id": "12",
+      "name": "Indoor Plant Collection",
+      "category": "home",
+      "price": 65,
+      "brand": "The Sill",
+      "imageUrl": "https://example.com/images/home/indoor-plants.jpg"
+    },
+    {
+      "id": "13",
+      "name": "Luxury Skincare Set",
+      "category": "beauty",
+      "price": 175,
+      "brand": "La Mer",
+      "imageUrl": "https://example.com/images/beauty/skincare-set.jpg"
+    },
+    {
+      "id": "14",
+      "name": "Espresso Machine",
+      "category": "kitchen",
+      "price": 399.99,
+      "brand": "Breville",
+      "imageUrl": "https://example.com/images/kitchen/espresso-machine.jpg"
+    },
+    {
+      "id": "15",
+      "name": "Premium Golf Clubs Set",
+      "category": "sports",
+      "price": 799.99,
+      "brand": "Callaway",
+      "imageUrl": "https://example.com/images/sports/golf-clubs.jpg"
+    },
+    {
+      "id": "16",
+      "name": "Designer Sunglasses",
+      "category": "accessories",
+      "price": 219.99,
+      "brand": "Ray-Ban",
+      "imageUrl": "https://example.com/images/accessories/designer-sunglasses.jpg"
+    },
+    {
+      "id": "17",
+      "name": "Wine Subscription Box",
+      "category": "food",
+      "price": 89.99,
+      "brand": "Winc",
+      "imageUrl": "https://example.com/images/food/wine-subscription.jpg"
+    },
+    {
+      "id": "18",
+      "name": "Modern Art Print",
+      "category": "home",
+      "price": 129,
+      "brand": "Society6",
+      "imageUrl": "https://example.com/images/home/modern-art-print.jpg"
+    },
+    {
+      "id": "19",
+      "name": "Premium Yoga Mat",
+      "category": "fitness",
+      "price": 79.99,
+      "brand": "Lululemon",
+      "imageUrl": "https://example.com/images/fitness/yoga-mat.jpg"
+    },
+    {
+      "id": "20",
+      "name": "E-Reader",
+      "category": "electronics",
+      "price": 129.99,
+      "brand": "Kindle",
+      "imageUrl": "https://example.com/images/electronics/e-reader.jpg"
+    },
+    {
+      "id": "21",
+      "name": "Luxury Bath Robe",
+      "category": "clothing",
+      "price": 99,
+      "brand": "Parachute",
+      "imageUrl": "https://example.com/images/clothing/bath-robe.jpg"
+    },
+    {
+      "id": "22",
+      "name": "Smart Home Speaker",
+      "category": "electronics",
+      "price": 199.99,
+      "brand": "Sonos",
+      "imageUrl": "https://example.com/images/electronics/smart-speaker.jpg"
+    },
+    {
+      "id": "23",
+      "name": "Leather Crossbody Bag",
+      "category": "accessories",
+      "price": 179.99,
+      "brand": "Kate Spade",
+      "imageUrl": "https://example.com/images/accessories/crossbody-bag.jpg"
+    },
+    {
+      "id": "24",
+      "name": "Gourmet Coffee Sampler",
+      "category": "food",
+      "price": 42,
+      "brand": "Blue Bottle",
+      "imageUrl": "https://example.com/images/food/coffee-sampler.jpg"
+    },
+    {
+      "id": "25",
+      "name": "Personalized Jewelry Box",
+      "category": "accessories",
+      "price": 85,
+      "brand": "Things Remembered",
+      "imageUrl": "https://example.com/images/accessories/jewelry-box.jpg"
+    },
+    {
+      "id": "26",
+      "name": "Smart Doorbell",
+      "category": "home",
+      "price": 149.99,
+      "brand": "Ring",
+      "imageUrl": "https://example.com/images/home/smart-doorbell.jpg"
+    },
+    {
+      "id": "27",
+      "name": "Designer Watch",
+      "category": "accessories",
+      "price": 299.99,
+      "brand": "Movado",
+      "imageUrl": "https://example.com/images/accessories/designer-watch.jpg"
+    },
+    {
+      "id": "28",
+      "name": "Cocktail Making Kit",
+      "category": "kitchen",
+      "price": 69.99,
+      "brand": "Crafthouse",
+      "imageUrl": "https://example.com/images/kitchen/cocktail-kit.jpg"
+    },
+    {
+      "id": "29",
+      "name": "Luxury Throw Blanket",
+      "category": "home",
+      "price": 129,
+      "brand": "Pendleton",
+      "imageUrl": "https://example.com/images/home/throw-blanket.jpg"
+    },
+    {
+      "id": "30",
+      "name": "Wireless Earbuds",
+      "category": "electronics",
+      "price": 159.99,
+      "brand": "Apple",
+      "imageUrl": "https://example.com/images/electronics/wireless-earbuds.jpg"
+    },
+    {
+      "id": "31",
+      "name": "Men's Dress Shoes",
+      "category": "clothing",
+      "price": 245,
+      "brand": "Allen Edmonds",
+      "imageUrl": "https://example.com/images/clothing/dress-shoes.jpg"
+    },
+    {
+      "id": "32",
+      "name": "Spa Gift Basket",
+      "category": "beauty",
+      "price": 79.99,
+      "brand": "Lush",
+      "imageUrl": "https://example.com/images/beauty/spa-basket.jpg"
+    },
+    {
+      "id": "33",
+      "name": "Board Game Collection",
+      "category": "entertainment",
+      "price": 99.99,
+      "brand": "Hasbro",
+      "imageUrl": "https://example.com/images/entertainment/board-games.jpg"
+    },
+    {
+      "id": "34",
+      "name": "Leather Travel Bag",
+      "category": "accessories",
+      "price": 199.99,
+      "brand": "Samsonite",
+      "imageUrl": "https://example.com/images/accessories/travel-bag.jpg"
+    },
+    {
+      "id": "35",
+      "name": "Virtual Reality Headset",
+      "category": "electronics",
+      "price": 299.99,
+      "brand": "Oculus",
+      "imageUrl": "https://example.com/images/electronics/vr-headset.jpg"
+    },
+    {
+      "id": "36",
+      "name": "Handcrafted Ceramic Mug Set",
+      "category": "kitchen",
+      "price": 49.99,
+      "brand": "Anthropologie",
+      "imageUrl": "https://example.com/images/kitchen/ceramic-mugs.jpg"
+    },
+    {
+      "id": "37",
+      "name": "Wool Dress Coat",
+      "category": "clothing",
+      "price": 275,
+      "brand": "J.Crew",
+      "imageUrl": "https://example.com/images/clothing/wool-coat.jpg"
+    },
+    {
+      "id": "38",
+      "name": "Smart Fitness Scale",
+      "category": "fitness",
+      "price": 89.99,
+      "brand": "Withings",
+      "imageUrl": "https://example.com/images/fitness/smart-scale.jpg"
+    },
+    {
+      "id": "39",
+      "name": "Gourmet Olive Oil Set",
+      "category": "food",
+      "price": 65,
+      "brand": "Williams Sonoma",
+      "imageUrl": "https://example.com/images/food/olive-oil-set.jpg"
+    },
+    {
+      "id": "40",
+      "name": "Bluetooth Portable Speaker",
+      "category": "electronics",
+      "price": 129.99,
+      "brand": "JBL",
+      "imageUrl": "https://example.com/images/electronics/portable-speaker.jpg"
+    },
+    {
+      "id": "41",
+      "name": "Luxury Pen Set",
+      "category": "office",
+      "price": 159.99,
+      "brand": "Cross",
+      "imageUrl": "https://example.com/images/office/luxury-pens.jpg"
+    },
+    {
+      "id": "42",
+      "name": "Indoor Herb Garden Kit",
+      "category": "kitchen",
+      "price": 49.99,
+      "brand": "AeroGarden",
+      "imageUrl": "https://example.com/images/kitchen/herb-garden.jpg"
+    },
+    {
+      "id": "43",
+      "name": "Whiskey Decanter Set",
+      "category": "home",
+      "price": 89.99,
+      "brand": "Waterford",
+      "imageUrl": "https://example.com/images/home/whiskey-decanter.jpg"
+    },
+    {
+      "id": "44",
+      "name": "Leather Gloves",
+      "category": "accessories",
+      "price": 79.99,
+      "brand": "UGG",
+      "imageUrl": "https://example.com/images/accessories/leather-gloves.jpg"
+    },
+    {
+      "id": "45",
+      "name": "Digital Camera",
+      "category": "electronics",
+      "price": 499.99,
+      "brand": "Canon",
+      "imageUrl": "https://example.com/images/electronics/digital-camera.jpg"
+    },
+    {
+      "id": "46",
+      "name": "Silk Pajama Set",
+      "category": "clothing",
+      "price": 149.99,
+      "brand": "Slip",
+      "imageUrl": "https://example.com/images/clothing/silk-pajamas.jpg"
+    },
+    {
+      "id": "47",
+      "name": "Artisanal Cheese Board",
+      "category": "kitchen",
+      "price": 75,
+      "brand": "Crate & Barrel",
+      "imageUrl": "https://example.com/images/kitchen/cheese-board.jpg"
+    },
+    {
+      "id": "48",
+      "name": "Smart Plant Sensor",
+      "category": "home",
+      "price": 39.99,
+      "brand": "Gardener's Supply",
+      "imageUrl": "https://example.com/images/home/plant-sensor.jpg"
+    },
+    {
+      "id": "49",
+      "name": "Designer Tie",
+      "category": "accessories",
+      "price": 85,
+      "brand": "Brooks Brothers",
+      "imageUrl": "https://example.com/images/accessories/designer-tie.jpg"
+    },
+    {
+      "id": "50",
+      "name": "Aromatherapy Diffuser",
+      "category": "home",
+      "price": 59.99,
+      "brand": "Vitruvi",
+      "imageUrl": "https://example.com/images/home/aromatherapy-diffuser.jpg"
+    }
+  ],
+  "your_wishlist": [
+    {
+      "id": "2",
+      "name": "Leather Watch Box",
+      "category": "accessories",
+      "price": 89.99,
+      "brand": "Fossil",
+      "imageUrl": "https://i.pinimg.com/736x/22/27/be/2227be88f1c4f1badc8d14e8d702379a.jpg"
+    },
+    {
+      "id": "3",
+      "name": "Premium Chocolate Gift Set",
+      "category": "food",
+      "price": 45.99,
+      "brand": "Godiva",
+      "imageUrl": "https://i.pinimg.com/736x/cb/3b/84/cb3b8430965b0252da2021259f7e4e96.jpg"
+    },
+    {
+      "id": "2",
+      "name": "Leather Watch Box",
+      "category": "accessories",
+      "price": 89.99,
+      "brand": "Fossil",
+      "imageUrl": "https://i.pinimg.com/736x/22/27/be/2227be88f1c4f1badc8d14e8d702379a.jpg"
+    },
+    {
+      "id": "3",
+      "name": "Premium Chocolate Gift Set",
+      "category": "food",
+      "price": 45.99,
+      "brand": "Godiva",
+      "imageUrl": "https://i.pinimg.com/736x/cb/3b/84/cb3b8430965b0252da2021259f7e4e96.jpg"
+    },
+    {
+      "id": "5",
+      "name": "Scented Candle Collection",
+      "category": "home",
+      "price": 59.99,
+      "brand": "Yankee Candle",
+      "imageUrl": "https://example.com/images/home/scented-candle-collection.jpg"
+    },
+    {
+      "id": "8",
+      "name": "Luxury Perfume",
+      "category": "beauty",
+      "price": 120,
+      "brand": "Chanel",
+      "imageUrl": "https://example.com/images/beauty/luxury-perfume.jpg"
+    },
+    {
+      "id": "9",
+      "name": "Crystal Wine Glasses Set",
+      "category": "home",
+      "price": 149.99,
+      "brand": "Waterford",
+      "imageUrl": "https://example.com/images/home/crystal-wine-glasses.jpg"
+    }
+  ]
+}

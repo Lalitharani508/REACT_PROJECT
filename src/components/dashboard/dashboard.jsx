@@ -4,9 +4,9 @@ import { author } from "../../firebaseconfig";
 import { useNavigate, Link } from "react-router-dom";
 import './dashboard.css';
 
-const Dashboard = () => {
+const Header = () => {
   const navigate = useNavigate();
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   
   const logout = async () => {
     try {
@@ -17,76 +17,80 @@ const Dashboard = () => {
     }
   };
 
-  // Toggle sidebar for mobile view
-  const toggleSidebar = () => {
-    setShowSidebar(!showSidebar);
+  // Toggle dropdown menu for mobile view
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
   };
 
   return (
-    <div className="dashboard-container">
-      {/* Top header bar - now minimal */}
-      <header className="dashboard-header">
-        <button className="menu-toggle" onClick={toggleSidebar}>
-          <i className="menu-icon">☰</i>
-        </button>
-      </header>
-
-      {/* Left sidebar navigation with title at top */}
-      <div className={`sidebar ${showSidebar ? 'active' : ''}`}>
-        <div className="sidebar-title">
-          <h3>Lalitha's Wishlist</h3>
-          <button className="close-sidebar" onClick={toggleSidebar}>×</button>
+    <div className="header-container">
+      {/* Main header bar */}
+      <header className="main-header">
+        <div className="header-left">
+          <h2 className="site-title">Lalitha's Wishlist</h2>
         </div>
         
-        <nav className="sidebar-nav">
+        {/* Desktop navigation */}
+        <nav className="desktop-nav">
           <ul>
             <li>
-              <Link to="/" onClick={toggleSidebar}>Wishlist</Link>
+              <Link to="/wishlist">Wishlist</Link>
             </li>
             <li>
-              <Link to="/giftideas" onClick={toggleSidebar}>Gift Ideas</Link>
+              <Link to="/giftideas">Gift Ideas</Link>
             </li>
             <li>
-              <Link to="/share" onClick={toggleSidebar}>Share</Link>
+              <Link to="/share">Share</Link>
             </li>
             <li>
-              <Link to="/settings" onClick={toggleSidebar}>Settings</Link>
+              <Link to="/settings">Settings</Link>
             </li>
           </ul>
         </nav>
         
-        <div className="sidebar-footer">
+        <div className="header-right">
           <button className="logout-btn" onClick={logout}>
             Logout
           </button>
+          
+          {/* Mobile menu button */}
+          <button className="menu-toggle" onClick={toggleDropdown}>
+            <i className="menu-icon">☰</i>
+          </button>
         </div>
-      </div>
+      </header>
 
-      {/* Main content area */}
-      <main className="dashboard-content">
-        <h2>Your Wishlists</h2>
-        <div className="wishlist-cards">
-          <div className="wishlist-card">
-            <h3>Birthday Wishlist</h3>
-            <p>Items: 5</p>
-            <button className="view-btn">View</button>
-          </div>
-          <div className="wishlist-card">
-            <h3>Holiday Wishlist</h3>
-            <p>Items: 3</p>
-            <button className="view-btn">View</button>
-          </div>
-          <div className="wishlist-card add-new">
-            <h3>Create New Wishlist</h3>
-            <button className="add-btn">+</button>
-          </div>
+      {/* Mobile dropdown navigation */}
+      {showDropdown && (
+        <div className="mobile-dropdown">
+          <nav className="mobile-nav">
+            <ul>
+              <li>
+                <Link to="/" onClick={toggleDropdown}>Wishlist</Link>
+              </li>
+              <li>
+                <Link to="/giftideas" onClick={toggleDropdown}>Gift Ideas</Link>
+              </li>
+              <li>
+                <Link to="/share" onClick={toggleDropdown}>Share</Link>
+              </li>
+              <li>
+                <Link to="/settings" onClick={toggleDropdown}>Settings</Link>
+              </li>
+              <li className="mobile-logout">
+                <button onClick={logout}>
+                  Logout
+                </button>
+              </li>
+            </ul>
+          </nav>
         </div>
-      </main>
+      )}
       
-      {/* Overlay for mobile sidebar */}
-      {showSidebar && <div className="sidebar-overlay" onClick={toggleSidebar}></div>}
+      {/* Overlay for mobile dropdown */}
+      {showDropdown && <div className="dropdown-overlay" onClick={toggleDropdown}></div>}
     </div>
   );
 };
 
-export default Dashboard;
+export default Header;
