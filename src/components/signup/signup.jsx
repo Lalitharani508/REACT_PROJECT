@@ -2,12 +2,13 @@
 import {React,useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { author } from "../../firebaseconfig";
-import {createUserWithEmailAndPassword,updateProfile} from 'firebase/auth'
+import { author,db } from "../../firebaseconfig";
+import {createUserWithEmailAndPassword} from 'firebase/auth'
+import { set,ref } from "firebase/database";
 import './sign.css';
 import { Button, Form, Container, Card, Row, Col } from 'react-bootstrap';
 const Signup = () => {
-    const navigate = useNavigate();
+    const navigate = useNavigate(); 
     const [signupDetails, setSignupDetails] = useState({
         name: "",
         email: "",
@@ -25,10 +26,11 @@ const Signup = () => {
         const { name, email, password} = signupDetails;
         try {
             const signupusers = await createUserWithEmailAndPassword(author, email, password);
-            const signupusercred = signupusers.user;
-            await updateProfile(signupusercred, {
-                displayName: name
-            });
+            // const signupusercred = signupusers.user;
+            // await updateProfile(signupusercred, {
+            //     displayName: name
+            // });
+
             Swal.fire({
                 title: 'Success!',
                 text: 'Signup done successfully!',
@@ -40,6 +42,12 @@ const Signup = () => {
                     popup: 'animate__animated animate__fadeOutUp' // Animate.css animation
                 }
             });
+            await set(ref(db,"Users/"+name),{
+                name:name,
+                email:email,
+                id:signupusers.user.uid
+            })
+            
             navigate("/login");
         } catch (err) {
             console.log(err);

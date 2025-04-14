@@ -8,37 +8,37 @@ import Dashboard from "./components/dashboard/dashboard";
 import { author } from "./firebaseconfig";
 import GiftIdeas from "./components/giftideas/giftideas";
 import Createwishlist from "./components/wishlists/createwishlist";
-
+import { Navigate } from "react-router-dom";
 const App = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(author, (currentUser) => {
+    const userloggedin= onAuthStateChanged(author, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
     });
-    return () => unsubscribe();
+    return () => userloggedin();
   }, []);
 
   if (loading) {
-    return <h1>Loading...</h1>;
+    return <h1>Your going to Dashboard</h1>;
   }
 
   return (
     <div>
       {/* Navbar always shows regardless of authentication */}
-      <Navbar1 />
+      {/* <Navbar1 /> */}
       <Dashboard/>
       
       <Routes>
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={user ?<Createwishlist />:<Navigate to="./login"/>} />
         <Route path="/wishlist" element={<Createwishlist />} />
        
         <Route path="/giftideas" element={<GiftIdeas />} />
-        {/* <Route path="/" element={<Dashboard/>} /> */}
+        
       </Routes>
     </div>
   );

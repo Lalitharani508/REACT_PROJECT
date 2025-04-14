@@ -1,41 +1,93 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Container, Navbar, Nav } from "react-bootstrap";
-import { useNavigate } from 'react-router-dom';
-import './navbar.css'
-const Navbar1=()=>{
-    const nav = useNavigate();
+import { useNavigate, useLocation } from 'react-router-dom';
+import { FaHome, FaRegHeart, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'animate.css';
+import './navbar.css';
 
+const Navbar1 = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [scrolled, setScrolled] = useState(false);
+    
+    // Track scroll position for navbar effects
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 50) {
+                setScrolled(true);
+            } else {
+                setScrolled(false);
+            }
+        };
+        
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+    
+    // Check if the nav link is active
+    const isActive = (path) => {
+        return location.pathname === path;
+    };
 
     return (
-        <Navbar bg="dark" variant="dark" expand="lg" className="custom-navbar">
+        <>
+        <Navbar 
+            bg="transparent" 
+            variant="dark" 
+            expand="lg" 
+            fixed="top"
+            className={`animate__animated animate__fadeIn custom-navbar ${scrolled ? 'navbar-scrolled' : ''}`}
+        >
             <Container>
-                <Navbar.Brand href="#home" className="navbar-brand">Wish Well</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Brand 
+                    onClick={() => navigate("/")} 
+                    className="navbar-brand animate__animated animate__pulse animate__infinite animate__slow"
+                >
+                    <span className="brand-text">✨ Wish Well</span>
+                </Navbar.Brand>
+                
+                <Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0 shadow-none" />
+                
                 <Navbar.Collapse id="basic-navbar-nav">
-                    {/* <Nav className="me-auto">
-                        <Nav.Link href="#home" className="nav-link">Wishes</Nav.Link>
-                        <Nav.Link href="#features" className="nav-link">Activity</Nav.Link>
-                        <Nav.Link href="#pricing" className="nav-link"></Nav.Link>
-                    </Nav> */}
-                    <div className="navbar-buttons">
+                    <Nav className="mx-auto">
+                        {/* <Nav.Link 
+                            onClick={() => navigate("/")}
+                            className={`nav-link mx-2 animate__animated animate__fadeIn ${isActive("/") ? "active-link" : ""}`}
+                        >
+                            <FaHome className="nav-icon" /> Home
+                        </Nav.Link>
+                        <Nav.Link 
+                            onClick={() => navigate("/wishes")}
+                            className={`nav-link mx-2 animate__animated animate__fadeIn animate__delay-1s ${isActive("/wishes") ? "active-link" : ""}`}
+                        >
+                            <FaRegHeart className="nav-icon" /> Wishes
+                        </Nav.Link> */}
+                    </Nav>
+                    
+                    <div className="navbar-buttons animate__animated animate__fadeIn animate__delay-2s">
                         <Button 
                             variant="outline-light" 
-                            className="navbar-button" 
-                            onClick={() => nav("/signup")}
+                            className="navbar-button signup-btn"
+                            onClick={() => navigate("/signup")}
                         >
-                            Signup
+                            <FaUserPlus className="btn-icon" /> Signup
                         </Button>
                         <Button 
-                            variant="outline-light" 
-                            className="navbar-button" 
-                            onClick={() => nav("/login")}
+                            variant="primary" 
+                            className="navbar-button login-btn ms-3"
+                            onClick={() => navigate("/login")}
                         >
-                            Login
+                            <FaSignInAlt className="btn-icon" /> Login
                         </Button>
                     </div>
                 </Navbar.Collapse>
             </Container>
         </Navbar>
+        </>
     );
 }
+
 export default Navbar1;

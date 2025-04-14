@@ -403,6 +403,7 @@ const GiftIdeas = () => {
                       {gift.brand && (
                         <div className="text-muted small mb-1">
                           Brand: {gift.brand}
+                          
                         </div>
                       )}
                       {gift.category && (
@@ -438,7 +439,7 @@ const GiftIdeas = () => {
                             visitGiftWebsite(e, gift.websiteLink);
                           }}
                         >
-                          <FaExternalLinkAlt className="me-2" /> Visit Site
+                          <FaExternalLinkAlt className="me-2" /> Visit More
                         </Button>
                       ) : (
                         <Button 

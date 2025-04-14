@@ -564,15 +564,37 @@
       "dateAdded": "2025-04-13T17:55:15.966Z"
     },
     {
-      "id": "26c6",
-      "name": "Premium Chocolate Gift Set",
-      "imageUrl": "https://i.pinimg.com/736x/cb/3b/84/cb3b8430965b0252da2021259f7e4e96.jpg",
-      "websiteLink": "https://www.godiva.com",
-      "category": "food",
-      "price": 45.99,
-      "brand": "Godiva",
-      "description": "Luxurious assortment of handcrafted Belgian chocolates including truffles, pralines, and ganaches in an elegant gift box.",
-      "dateAdded": "2025-04-13T17:55:24.703Z"
+      "id": "9fe5",
+      "name": "Leather Watch Box",
+      "imageUrl": "https://i.pinimg.com/736x/22/27/be/2227be88f1c4f1badc8d14e8d702379a.jpg",
+      "websiteLink": "https://www.fossil.com",
+      "category": "accessories",
+      "price": 89.99,
+      "brand": "Fossil",
+      "description": "Handcrafted genuine leather watch storage case with soft velvet interior, holds up to 10 watches with additional compartments for accessories.",
+      "dateAdded": "2025-04-14T06:04:47.231Z"
+    },
+    {
+      "id": "b505",
+      "name": "Virtual Reality Headset",
+      "imageUrl": "https://example.com/images/electronics/vr-headset.jpg",
+      "websiteLink": "https://www.oculus.com",
+      "category": "electronics",
+      "price": 299.99,
+      "brand": "Oculus",
+      "description": "Immersive VR headset with high-resolution display, integrated audio, intuitive controllers, and access to hundreds of games and experiences.",
+      "dateAdded": "2025-04-14T17:45:47.718Z"
+    },
+    {
+      "id": "17a2",
+      "name": "Leather Travel Bag",
+      "imageUrl": "https://i.pinimg.com/736x/1f/9d/55/1f9d55796297bf195cdecf36801cf860.jpg",
+      "websiteLink": "https://www.samsonite.com",
+      "category": "accessories",
+      "price": 199.99,
+      "brand": "Samsonite",
+      "description": "Durable full-grain leather weekend duffel with padded laptop sleeve, multiple organizational pockets, and detachable shoulder strap.",
+      "dateAdded": "2025-04-14T17:46:58.585Z"
     }
   ]
 }
