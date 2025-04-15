@@ -28,7 +28,7 @@ const App = () => {
   return (
     <div>
       {/* Navbar always shows regardless of authentication */}
-      {/* <Navbar1 /> */}
+      <Navbar1 />
       <Dashboard/>
       
       <Routes>

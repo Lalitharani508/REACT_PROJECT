@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+// import { giftData } from "../../data/data";
 import axios from "axios";
 import { Button, Card, Container, Row, Col, Form, InputGroup } from "react-bootstrap";
 import Swal from "sweetalert2";

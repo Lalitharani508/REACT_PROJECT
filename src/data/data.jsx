@@ -1,4 +1,4 @@
-{
+export const giftData={
   "gifts": [
     {
       "id": "1",
@@ -380,7 +380,7 @@
       "category": "electronics",
       "price": 299.99,
       "brand": "Oculus",
-      "imageUrl": "https://lookaside.fbsbx.com/elementpath/media/?media_id=482519111424546&version=1725906607&transcode_extension=webp",
+      "imageUrl": "https://example.com/images/electronics/vr-headset.jpg",
       "websiteLink": "https://www.oculus.com",
       "rating": 4.7,
       "description": "Immersive VR headset with high-resolution display, integrated audio, intuitive controllers, and access to hundreds of games and experiences."
@@ -391,7 +391,7 @@
       "category": "kitchen",
       "price": 49.99,
       "brand": "Anthropologie",
-      "imageUrl": "https://images.urbndata.com/is/image/Anthropologie/79272779_038_b?$a15-pdp-detail-shot$&fit=constrain&fmt=webp&qlt=80&wid=960",
+      "imageUrl": "https://example.com/images/kitchen/ceramic-mugs.jpg",
       "websiteLink": "https://www.anthropologie.com",
       "rating": 4.5,
       "description": "Set of four artisan-made ceramic mugs with unique glazing and hand-painted details, each with slightly different character and charm."
@@ -402,7 +402,7 @@
       "category": "clothing",
       "price": 275,
       "brand": "J.Crew",
-      "imageUrl": "https://www.jcrew.com/s7-img-facade/CC208_NA6903?hei=640&crop=0,0,512,0",
+      "imageUrl": "https://example.com/images/clothing/wool-coat.jpg",
       "websiteLink": "https://www.jcrew.com",
       "rating": 4.6,
       "description": "Classic tailored wool-blend coat with notch lapels, welt pockets, and back vent, fully lined for warmth and professional style."
@@ -413,7 +413,7 @@
       "category": "fitness",
       "price": 89.99,
       "brand": "Withings",
-      "imageUrl": "https://image-cache.withings.com/site/media/wi_products/body-smart-white-kg-packshot.webp?fit&src=png&h=800",
+      "imageUrl": "https://example.com/images/fitness/smart-scale.jpg",
       "websiteLink": "https://www.withings.com",
       "rating": 4.6,
       "description": "Wi-Fi connected body composition scale that measures weight, BMI, body fat, muscle mass, and more, syncing data to smartphone apps."
@@ -424,7 +424,7 @@
       "category": "food",
       "price": 65,
       "brand": "Williams Sonoma",
-      "imageUrl": "https://assets.wsimgs.com/wsimgs/rk/images/dp/wcm/202445/0005/img51o.jpg",
+      "imageUrl": "https://example.com/images/food/olive-oil-set.jpg",
       "websiteLink": "https://www.williams-sonoma.com",
       "rating": 4.7,
       "description": "Collection of three premium extra virgin olive oils from distinguished growing regions, presented in elegant glass bottles with pour spouts."
@@ -435,7 +435,7 @@
       "category": "electronics",
       "price": 129.99,
       "brand": "JBL",
-      "imageUrl": "https://www.jbl.com/dw/image/v2/BFND_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw0bb6b981/1_JBL_FLIP6_HERO_RED_29399_x1.png?sw=300&sh=300",
+      "imageUrl": "https://example.com/images/electronics/portable-speaker.jpg",
       "websiteLink": "https://www.jbl.com",
       "rating": 4.6,
       "description": "Waterproof Bluetooth speaker with 12 hours of playtime, powerful bass radiators, and durable design for outdoor adventures and poolside use."
@@ -446,7 +446,7 @@
       "category": "office",
       "price": 159.99,
       "brand": "Cross",
-      "imageUrl": "https://cross.com/cdn/shop/files/jz8vraxauhwfcmfv1ovo_2.jpg?v=1718648322&width=533",
+      "imageUrl": "https://example.com/images/office/luxury-pens.jpg",
       "websiteLink": "https://www.cross.com",
       "rating": 4.7,
       "description": "Elegant writing set featuring a ballpoint pen and fountain pen with 23K gold-plated accents, presented in a premium gift box."
@@ -457,7 +457,7 @@
       "category": "kitchen",
       "price": 49.99,
       "brand": "AeroGarden",
-      "imageUrl": "https://aerogarden.com/dw/image/v2/BGFS_PRD/on/demandware.static/-/Sites-consolidated-master-catalog/default/dwb5a87c70/images/hi-res/Grow%20Lights/Trio%20Grow%20Lights/082522_JV_A_0544_Alt_2.jpeg?sw=800&sh=800",
+      "imageUrl": "https://example.com/images/kitchen/herb-garden.jpg",
       "websiteLink": "https://www.aerogarden.com",
       "rating": 4.5,
       "description": "Compact hydroponic growing system with LED grow lights, automated reminders, and seed pods for growing fresh herbs year-round indoors."
@@ -468,7 +468,7 @@
       "category": "home",
       "price": 89.99,
       "brand": "Waterford",
-      "imageUrl": "https://www.waterford.com/-/media/products/2023/08/15/02/42/resource_waterfordemea_1058536.jpg?q=100&iw=1288&ih=1288&crop=1",
+      "imageUrl": "https://example.com/images/home/whiskey-decanter.jpg",
       "websiteLink": "https://www.waterford.com",
       "rating": 4.8,
       "description": "Crystal whiskey decanter with matching set of four rocks glasses, featuring classic cut design for an elegant display and serving option."
@@ -479,7 +479,7 @@
       "category": "accessories",
       "price": 79.99,
       "brand": "UGG",
-      "imageUrl": "https://dms.deckers.com/ugg/image/upload/f_auto,q_40,dpr_2/b_rgb:f4f2ee/w_966/v1727812966/101031-CHE_1.png?_s=RAABAB0",
+      "imageUrl": "https://example.com/images/accessories/leather-gloves.jpg",
       "websiteLink": "https://www.ugg.com",
       "rating": 4.6,
       "description": "Luxurious genuine leather gloves lined with soft cashmere, featuring touchscreen capability for using digital devices without removing gloves."
@@ -490,19 +490,19 @@
       "category": "electronics",
       "price": 499.99,
       "brand": "Canon",
-      "imageUrl": "https://in.canon/media/image/2023/06/30/ff78050bfffc4c8aa2e47d6a24388293_EOS+PR+Detail+page.png",
+      "imageUrl": "https://example.com/images/electronics/digital-camera.jpg",
       "websiteLink": "https://www.canon.com",
       "rating": 4.7,
       "description": "High-performance mirrorless camera with 24.1MP APS-C sensor, 4K video capability, built-in Wi-Fi, and versatile kit lens for stunning photography."
     },
     {
       "id": "46",
-      "name": "Lipsticks",
-      "category": "Beauty",
-      "price": 4000,
-      "brand": "Nykaa",
-      "imageUrl": "https://images-static.nykaa.com/media/catalog/product/tr:w-220,h-220,cm-pad_resize/4/c/4ce21c43614274132625_1.jpg",
-      "websiteLink": "https://www.nykaa.com",
+      "name": "Silk Pajama Set",
+      "category": "clothing",
+      "price": 149.99,
+      "brand": "Slip",
+      "imageUrl": "https://example.com/images/clothing/silk-pajamas.jpg",
+      "websiteLink": "https://www.slip.com",
       "rating": 4.8,
       "description": "Luxurious 100% mulberry silk pajama set with button-front top and elasticized pants, providing optimal comfort and temperature regulation."
     },
@@ -512,18 +512,18 @@
       "category": "kitchen",
       "price": 75,
       "brand": "Crate & Barrel",
-      "imageUrl": "https://cb.scene7.com/is/image/Crate/MateoServingPaddleBoardSHS19?$web_pdp_main_carousel_high$",
+      "imageUrl": "https://example.com/images/kitchen/cheese-board.jpg",
       "websiteLink": "https://www.crateandbarrel.com",
       "rating": 4.6,
       "description": "Handcrafted wooden cheese board with inlaid marble surface, complete with three matching cheese knives for perfect entertaining."
     },
     {
       "id": "48",
-      "name": "Seeding Transplant Tongs",
+      "name": "Smart Plant Sensor",
       "category": "home",
       "price": 39.99,
       "brand": "Gardener's Supply",
-      "imageUrl": "https://assets.gardeners.com/transform/PDP_Main/af83046c-e50a-4da3-8cf3-a05db80c6dd5/8612047_026-tif?w=840&h=1120",
+      "imageUrl": "https://example.com/images/home/plant-sensor.jpg",
       "websiteLink": "https://www.gardeners.com",
       "rating": 4.3,
       "description": "Wireless plant monitor that tracks soil moisture, light, temperature, and nutrients, sending real-time updates and care recommendations to your smartphone."
@@ -534,7 +534,7 @@
       "category": "accessories",
       "price": 85,
       "brand": "Brooks Brothers",
-      "imageUrl": "https://cdn.fynd.com/v2/falling-surf-7c8bb8/fyprod/wrkr/products/pictures/item/free/original/brooks-brothers/100206732_gold/0/af02vXI9El-410391159001_1_3956.webp",
+      "imageUrl": "https://example.com/images/accessories/designer-tie.jpg",
       "websiteLink": "https://www.brooksbrothers.com",
       "rating": 4.7,
       "description": "Handcrafted pure silk necktie with timeless pattern, made in Italy with meticulous attention to detail and exceptional draping quality."
@@ -545,34 +545,14 @@
       "category": "home",
       "price": 59.99,
       "brand": "Vitruvi",
-      "imageUrl": "https://vitruvi.com/cdn/shop/files/pdp_best-sleep-bundle_white_gallery_1_image_04a44922-45c8-4e3f-9769-099b3e84ce48.png?v=1740101561&width=990",
+      "imageUrl": "https://example.com/images/home/aromatherapy-diffuser.jpg",
       "websiteLink": "https://www.vitruvi.com",
       "rating": 4.6,
       "description": "Stylish ceramic ultrasonic essential oil diffuser with customizable mist settings, automatic shut-off, and soft ambient LED light for relaxation."
     }
   ],
   "your_wishlist": [
-    {
-      "id": "d79a",
-      "name": "Scented Candle Collection",
-      "imageUrl": "https://i.pinimg.com/736x/89/8b/96/898b96022c0faed9d7a8ca9e733a563d.jpg",
-      "websiteLink": "https://www.yankeecandle.com",
-      "category": "home",
-      "price": 59.99,
-      "brand": "Yankee Candle",
-      "description": "Set of six signature scented candles in seasonal fragrances, made with premium-grade paraffin wax and each burning for up to 150 hours.",
-      "dateAdded": "2025-04-15T06:25:49.668Z"
-    },
-    {
-      "id": "ac2b",
-      "name": "dress",
-      "imageUrl": "https://i.pinimg.com/736x/69/8d/1e/698d1e982e1f0c057d45aec00544b8db.jpg",
-      "websiteLink": "https://perini.in/products/royal-blue-valentino-rose-gown?variant=50335537758489&country=IN&currency=INR&utm_medium=product_sync&utm_source=google&utm_content=sag_organic&utm_campaign=sag_organic&srsltid=AfmBOoomt12b6U_nx9nD5frpLP6g5monsisgHemka38BhLEEZWYXyEvfatM",
-      "category": "Clothing",
-      "price": 899,
-      "brand": "valentino",
-      "description": "sdfghjk",
-      "dateAdded": "2025-04-15T11:51:07.414Z"
-    }
+    
+    
   ]
 }
