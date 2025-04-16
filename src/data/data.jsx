@@ -551,8 +551,5 @@ export const giftData={
       "description": "Stylish ceramic ultrasonic essential oil diffuser with customizable mist settings, automatic shut-off, and soft ambient LED light for relaxation."
     }
   ],
-  "your_wishlist": [
-    
-    
-  ]
+ 
 }

@@ -9,6 +9,8 @@ import { author } from "./firebaseconfig";
 import GiftIdeas from "./components/giftideas/giftideas";
 import Createwishlist from "./components/wishlists/createwishlist";
 import { Navigate } from "react-router-dom";
+import Share from "./components/Share/Share";
+import Settings from "./components/settings/Settings";
 const App = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +30,7 @@ const App = () => {
   return (
     <div>
       {/* Navbar always shows regardless of authentication */}
-      <Navbar1 />
+      {/* <Navbar1 /> */}
       <Dashboard/>
       
       <Routes>
@@ -38,6 +40,7 @@ const App = () => {
         <Route path="/wishlist" element={<Createwishlist />} />
        
         <Route path="/giftideas" element={<GiftIdeas />} />
+        <Route path="/settings" element={<Settings/>}></Route>
         
       </Routes>
     </div>

@@ -2,7 +2,7 @@
 import {React,useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { author,db } from "../../firebaseconfig";
+import { author,database } from "../../firebaseconfig";
 import {createUserWithEmailAndPassword} from 'firebase/auth'
 import { set,ref } from "firebase/database";
 import './sign.css';
@@ -42,7 +42,7 @@ const Signup = () => {
                     popup: 'animate__animated animate__fadeOutUp' // Animate.css animation
                 }
             });
-            await set(ref(db,"Users/"+name),{
+            await set(ref(database,"Users/"+name),{
                 name:name,
                 email:email,
                 id:signupusers.user.uid

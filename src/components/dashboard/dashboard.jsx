@@ -44,7 +44,7 @@ const Header = () => {
   const navItems = [
     { path: "/wishlist", icon: <FaList className="me-2" />, text: "Wishlist" },
     { path: "/giftideas", icon: <FaGift className="me-2" />, text: "Gift Ideas" },
-    { path: "/share", icon: <FaShare className="me-2" />, text: "Share" },
+    // { path: "/share", icon: <FaShare className="me-2" />, text: "Share" },
     { path: "/settings", icon: <FaCog className="me-2" />, text: "Settings" }
   ];
 
