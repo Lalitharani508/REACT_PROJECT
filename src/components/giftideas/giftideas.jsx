@@ -884,14 +884,14 @@ const GiftIdeas = () => {
     
     if (url) {
       // For demo purposes, show an alert instead of opening the link
-      Swal.fire({
-        title: 'External Link',
-        text: `Would navigate to: ${url}`,
-        icon: 'info'
-      });
+      // Swal.fire({
+      //   title: 'External Link',
+      //   text: `Would navigate to: ${url}`,
+      //   icon: 'info'
+      // });
       
       // Uncomment this to actually open the link
-      // window.open(url, '_blank');
+      window.open(url, '_blank');
     } else {
       Swal.fire({
         title: 'No Link Available',

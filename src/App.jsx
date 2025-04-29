@@ -9,7 +9,6 @@ import { author } from "./firebaseconfig";
 import GiftIdeas from "./components/giftideas/giftideas";
 import Createwishlist from "./components/wishlists/createwishlist";
 import { Navigate } from "react-router-dom";
-import Share from "./components/Share/Share";
 import Settings from "./components/settings/Settings";
 const App = () => {
   const [user, setUser] = useState(null);
