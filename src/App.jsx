@@ -10,6 +10,7 @@ import GiftIdeas from "./components/giftideas/giftideas";
 import Createwishlist from "./components/wishlists/createwishlist";
 import { Navigate } from "react-router-dom";
 import Settings from "./components/settings/Settings";
+import FooterAlt from "./components/Footer/Footer";
 const App = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,6 +43,8 @@ const App = () => {
         <Route path="/settings" element={<Settings/>}></Route>
         
       </Routes>
+      <FooterAlt/>
+
     </div>
   );
 };
