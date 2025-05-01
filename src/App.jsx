@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar1 from "./components/navbar/navbar";
 import Login from "./components/login/login";
 import Signup from "./components/signup/signup";
 import { onAuthStateChanged } from "firebase/auth";
@@ -11,6 +10,7 @@ import Createwishlist from "./components/wishlists/createwishlist";
 import { Navigate } from "react-router-dom";
 import Settings from "./components/settings/Settings";
 import FooterAlt from "./components/Footer/Footer";
+import LandingPage from "./components/navbar/navbar";
 const App = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,8 +30,8 @@ const App = () => {
   return (
     <div>
       {/* Navbar always shows regardless of authentication */}
-      {/* <Navbar1 /> */}
-      <Dashboard/>
+      {/* <LandingPage/> */}
+       <Dashboard/>
       
       <Routes>
         <Route path="/signup" element={<Signup />} />
@@ -43,7 +43,7 @@ const App = () => {
         <Route path="/settings" element={<Settings/>}></Route>
         
       </Routes>
-      <FooterAlt/>
+      {/* <FooterAlt/>  */}
 
     </div>
   );

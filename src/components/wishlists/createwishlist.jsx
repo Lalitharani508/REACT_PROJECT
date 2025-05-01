@@ -10,9 +10,33 @@ import {
   set,
   get
 } from 'firebase/database';
-// Imports for authentication
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2';
+import 'animate.css';
+import { 
+  Container, 
+  Row, 
+  Col, 
+  Card, 
+  Button, 
+  ListGroup, 
+  Badge,
+  Spinner,
+  Alert,
+  Form,
+  Modal
+} from 'react-bootstrap';
+import { 
+  FaPlus, 
+  FaTrash, 
+  FaEdit, 
+  FaShare, 
+  FaEye, 
+  FaLink,
+  FaShoppingBasket,
+  FaListUl,
+  FaGift
+} from 'react-icons/fa';
 
 const Createwishlist = ({ giftItem }) => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -20,88 +44,55 @@ const Createwishlist = ({ giftItem }) => {
   const [activeWishlist, setActiveWishlist] = useState(null);
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showCreateForm, setShowCreateForm] = useState(false);
   const [dbStatus, setDbStatus] = useState('idle');
-  const [refreshKey, setRefreshKey] = useState(0);  // Added refresh key state
-  const [showListButton, setShowListButton] = useState(false);  // New state for Show List button
-  const [selectedWishlistId, setSelectedWishlistId] = useState(null);  // Track the recently created wishlist
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [selectedWishlistId, setSelectedWishlistId] = useState(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newWishlistTitle, setNewWishlistTitle] = useState('');
+  const [newWishlistDesc, setNewWishlistDesc] = useState('');
+  const [newWishlistPrivacy, setNewWishlistPrivacy] = useState('private');
 
-  // Get auth instance from Firebase
   const auth = getAuth();
 
-  // Check database connection on component mount
+  // Database connection check (same as before)
   useEffect(() => {
-    // Test database connection
     const testRef = ref(database, '.info/connected');
     const unsubscribe = onValue(testRef, (snapshot) => {
       const connected = snapshot.val();
-      console.log('Firebase database connection status:', connected ? 'connected' : 'disconnected');
-      if (connected) {
-        setDbStatus('connected');
-      } else {
-        setDbStatus('disconnected');
-      }
+      setDbStatus(connected ? 'connected' : 'disconnected');
     });
-
     return () => unsubscribe();
   }, []);
 
-  // Authentication listener
+  // Authentication listener (same as before)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log('User authenticated:', user.email);
         setCurrentUser(user);
-        // Force a refresh when user logs in
         setRefreshKey(prevKey => prevKey + 1);
       } else {
-        // Handle not logged in state
-        console.log('No user authenticated');
         setCurrentUser(null);
       }
     });
-
     return () => unsubscribe();
   }, [auth]);
 
-  // Set up a global listener for changes to the wishlists node
-  useEffect(() => {
-    if (!database) return;
-    
-    const wishlistsRef = ref(database, 'wishlists');
-    const unsubscribe = onValue(wishlistsRef, () => {
-      console.log('Global wishlist change detected');
-      // Force refresh by incrementing the refresh key
-      setRefreshKey(prevKey => prevKey + 1);
-    });
-    
-    return () => unsubscribe();
-  }, [database]);
-
-  // Fetch user's wishlists - now depends on refreshKey to trigger updates
+  // Fetch wishlists (same as before)
   useEffect(() => {
     if (!currentUser) {
       setLoading(false);
       return;
     }
 
-    console.log('Fetching wishlists for user:', currentUser.email);
     const wishlistsRef = ref(database, 'wishlists');
-    
-    // Use get() instead of onValue to ensure we get fresh data each time
     get(wishlistsRef).then((snapshot) => {
-      console.log('Wishlists snapshot received');
       const data = snapshot.val();
       if (!data) {
-        console.log('No wishlists found in database');
         setWishlists([]);
         setLoading(false);
         return;
       }
 
-      console.log('All wishlists:', Object.keys(data).length);
-
-      // Filter wishlists owned by current user
       const userWishlists = Object.entries(data).reduce((acc, [id, wishlist]) => {
         if (wishlist.owner === currentUser.email) {
           acc.push({ id, ...wishlist });
@@ -109,21 +100,17 @@ const Createwishlist = ({ giftItem }) => {
         return acc;
       }, []);
 
-      console.log('User wishlists:', userWishlists.length);
       setWishlists(userWishlists);
       
-      // If there are wishlists but no active one selected, select the first one
       if (userWishlists.length > 0 && !activeWishlist) {
         setActiveWishlist(userWishlists[0]);
         fetchWishlistItems(userWishlists[0].id);
       } else if (activeWishlist) {
-        // If we already have an active wishlist, refresh its items
         fetchWishlistItems(activeWishlist.id);
       } else {
         setLoading(false);
       }
       
-      // Check if we have a selected wishlist ID to focus on
       if (selectedWishlistId) {
         const selectedList = userWishlists.find(list => list.id === selectedWishlistId);
         if (selectedList) {
@@ -135,19 +122,15 @@ const Createwishlist = ({ giftItem }) => {
       console.error('Error fetching wishlists:', error);
       setLoading(false);
     });
-    
-  }, [currentUser, refreshKey, selectedWishlistId]); // Added selectedWishlistId as dependency
+  }, [currentUser, refreshKey, selectedWishlistId]);
 
-  // Process incoming gift item when it changes
+  // Process incoming gift item
   useEffect(() => {
     if (giftItem && currentUser && wishlists.length > 0) {
-      console.log('Received gift item to add:', giftItem);
-      // Show wishlist selection modal
       showWishlistSelectionModal(giftItem);
     }
   }, [giftItem, currentUser, wishlists]);
 
-  // Fetch items for the active wishlist - improved with direct get() call
   const fetchWishlistItems = (wishlistId) => {
     if (!wishlistId) {
       setWishlistItems([]);
@@ -156,14 +139,11 @@ const Createwishlist = ({ giftItem }) => {
     }
     
     setLoading(true);
-    console.log('Fetching items for wishlist:', wishlistId);
     const itemsRef = ref(database, `wishlists/${wishlistId}/items`);
     
-    // Use get() to ensure fresh data
     get(itemsRef).then((snapshot) => {
       const data = snapshot.val();
       if (!data) {
-        console.log('No items found for this wishlist');
         setWishlistItems([]);
         setLoading(false);
         return;
@@ -174,7 +154,6 @@ const Createwishlist = ({ giftItem }) => {
         ...item
       }));
       
-      console.log("Wishlist items from Firebase:", items);
       setWishlistItems(items);
       setLoading(false);
     }).catch((error) => {
@@ -183,7 +162,6 @@ const Createwishlist = ({ giftItem }) => {
     });
   };
 
-  // Show modal to select which wishlist to add the gift to
   const showWishlistSelectionModal = (gift) => {
     if (!wishlists.length) {
       Swal.fire({
@@ -192,49 +170,42 @@ const Createwishlist = ({ giftItem }) => {
         icon: "info",
         showCancelButton: true,
         confirmButtonText: "Create Wishlist",
-        cancelButtonText: "Cancel"
+        cancelButtonText: "Cancel",
+        customClass: {
+          popup: 'animate__animated animate__fadeIn'
+        }
       }).then((result) => {
         if (result.isConfirmed) {
-          createNewWishlist(gift);
+          setShowCreateModal(true);
         }
       });
       return;
     }
 
-    // Create HTML options for all wishlists
-    const wishlistOptions = wishlists.map(list => 
-      `<option value="${list.id}">${list.title}</option>`
-    ).join('');
-
     Swal.fire({
-      title: "Add to Wishlist",
-      html: `
-        <p>Select a wishlist to add <strong>${gift.name}</strong> to:</p>
-        <select id="wishlist-select" class="swal2-input">
-          ${wishlistOptions}
-        </select>
-      `,
+      title: `Add "${gift.name}" to Wishlist`,
+      input: 'select',
+      inputOptions: wishlists.reduce((options, list) => {
+        options[list.id] = list.title;
+        return options;
+      }, {}),
+      inputPlaceholder: 'Select a wishlist',
       showCancelButton: true,
       confirmButtonText: "Add to Wishlist",
       cancelButtonText: "Cancel",
-      preConfirm: () => {
-        const selectedWishlistId = document.getElementById('wishlist-select').value;
-        return selectedWishlistId;
+      customClass: {
+        popup: 'animate__animated animate__fadeIn'
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        const selectedWishlistId = result.value;
-        addGiftToWishlist(gift, selectedWishlistId);
+        addGiftToWishlist(gift, result.value);
       }
     });
   };
 
-  // Add received gift item to the selected wishlist
   const addGiftToWishlist = (gift, wishlistId) => {
-    console.log('Adding gift to wishlist:', wishlistId, gift);
     setDbStatus('writing');
     
-    // Transform the gift item format to match wishlist item format
     const newItem = {
       name: gift.name,
       imageUrl: gift.imageUrl || "",
@@ -242,40 +213,31 @@ const Createwishlist = ({ giftItem }) => {
       category: gift.category || "Other",
       price: gift.price ? parseFloat(gift.price) : null,
       description: gift.description || "",
-      priority: 3, // Default priority
+      priority: 3,
       addedAt: new Date().toISOString(),
       brand: gift.brand || "",
       rating: gift.rating || null
     };
     
-    console.log('New item data:', newItem);
     const itemsRef = ref(database, `wishlists/${wishlistId}/items`);
     const newItemRef = push(itemsRef);
     
     set(newItemRef, newItem)
       .then(() => {
-        console.log('Item added successfully with key:', newItemRef.key);
         setDbStatus('success');
-        
-        // Find the wishlist title for the success message
         const wishlistTitle = wishlists.find(list => list.id === wishlistId)?.title || "your wishlist";
         
-        // Show success message with "Show this list" button option
         Swal.fire({
           title: "Success!",
-          text: `${gift.name} has been added to ${wishlistTitle}`,
+          html: `<p class="animate__animated animate__tada"><FaGift /> ${gift.name} has been added to ${wishlistTitle}</p>`,
           icon: "success",
-          showClass: {
-            popup: 'animate__animated animate__fadeInDown'
-          },
-          hideClass: {
-            popup: 'animate__animated animate__fadeOutUp'
-          },
           showConfirmButton: true,
           confirmButtonText: "Show this list",
+          customClass: {
+            popup: 'animate__animated animate__fadeIn'
+          }
         }).then((result) => {
           if (result.isConfirmed) {
-            // Set this wishlist as active and show it
             setSelectedWishlistId(wishlistId);
             const selectedWishlist = wishlists.find(list => list.id === wishlistId);
             if (selectedWishlist) {
@@ -285,522 +247,684 @@ const Createwishlist = ({ giftItem }) => {
           }
         });
         
-        // Set this wishlist as active in background
         const selectedWishlist = wishlists.find(list => list.id === wishlistId);
         if (selectedWishlist) {
           setActiveWishlist(selectedWishlist);
-          // Force refresh the data
           setRefreshKey(prevKey => prevKey + 1);
-          // Directly fetch items for this wishlist
           fetchWishlistItems(wishlistId);
         }
       })
       .catch(error => {
-        console.error("Error adding item:", error);
         setDbStatus('error');
         Swal.fire({
           title: "Error!",
           text: `Failed to add item: ${error.message}`,
-          icon: "error"
+          icon: "error",
+          customClass: {
+            popup: 'animate__animated animate__shakeX'
+          }
         });
       });
   };
 
-  const createNewWishlist = (giftToAdd = null) => {
-    if (!currentUser) {
-      alert("You must be logged in to create a wishlist");
+  const handleCreateWishlist = () => {
+    if (!newWishlistTitle.trim()) {
+      Swal.fire({
+        title: "Oops!",
+        text: "Please enter a title for your wishlist",
+        icon: "warning",
+        customClass: {
+          popup: 'animate__animated animate__headShake'
+        }
+      });
       return;
     }
 
-    console.log('Creating new wishlist for user:', currentUser.email);
     setDbStatus('writing');
-
-    const title = prompt("Enter wishlist title:");
-    if (!title) {
-      setDbStatus('idle');
-      return;
-    }
-
-    const description = prompt("Enter wishlist description (optional):");
-    const privacySetting = prompt("Set privacy (public or private):", "private");
     const newWishlist = {
       owner: currentUser.email,
-      title,
-      description: description || "",
+      title: newWishlistTitle,
+      description: newWishlistDesc,
       createdAt: new Date().toISOString(),
-      privacy: privacySetting === "public" ? "public" : "private"
+      privacy: newWishlistPrivacy
     };
-
-    // Check if database is properly initialized
-    if (!database) {
-      console.error("Firebase database not initialized");
-      alert("Database connection error. Please try again later.");
-      setDbStatus('error');
-      return;
-    }
 
     const wishlistsRef = ref(database, 'wishlists');
     const newWishlistRef = push(wishlistsRef);
     
-    console.log('Saving new wishlist with key:', newWishlistRef.key);
-    
     set(newWishlistRef, newWishlist)
       .then(() => {
-        console.log('Wishlist created successfully');
         setDbStatus('success');
+        setShowCreateModal(false);
+        setNewWishlistTitle('');
+        setNewWishlistDesc('');
+        setNewWishlistPrivacy('private');
+        
         const newWishlistId = newWishlistRef.key;
-        const completeWishlist = { id: newWishlistId, ...newWishlist };
-        
-        // Store the new wishlist ID for focusing
         setSelectedWishlistId(newWishlistId);
-        setActiveWishlist(completeWishlist);
-        
-        // Force refresh the data
         setRefreshKey(prevKey => prevKey + 1);
         
-        // If there was a gift item waiting to be added, add it now
-        if (giftToAdd) {
-          addGiftToWishlist(giftToAdd, newWishlistId);
-        } else {
-          // If no gift item, show success with "Show this list" button
-          Swal.fire({
-            title: "Success!",
-            text: `New wishlist "${title}" created!`,
-            icon: "success",
-            showConfirmButton: true,
-            confirmButtonText: "Show this list"
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // Already set above, but make sure it's focused
-              setActiveWishlist(completeWishlist);
-              fetchWishlistItems(newWishlistId);
-            }
-          });
-        }
+        Swal.fire({
+          title: "Success!",
+          html: `<p class="animate__animated animate__tada"><FaListUl /> Wishlist "${newWishlistTitle}" created!</p>`,
+          icon: "success",
+          showConfirmButton: true,
+          confirmButtonText: "Show my wishlist",
+          customClass: {
+            popup: 'animate__animated animate__fadeIn'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setActiveWishlist({ id: newWishlistId, ...newWishlist });
+            fetchWishlistItems(newWishlistId);
+          }
+        });
       })
       .catch(error => {
-        console.error("Error creating wishlist:", error);
         setDbStatus('error');
-        alert(`Failed to create wishlist: ${error.message}`);
+        Swal.fire({
+          title: "Error!",
+          text: `Failed to create wishlist: ${error.message}`,
+          icon: "error",
+          customClass: {
+            popup: 'animate__animated animate__shakeX'
+          }
+        });
       });
   };
 
   const selectWishlist = (wishlist) => {
-    console.log('Selecting wishlist:', wishlist.id);
     setActiveWishlist(wishlist);
     fetchWishlistItems(wishlist.id);
-    setSelectedWishlistId(wishlist.id); // Track the selected wishlist
+    setSelectedWishlistId(wishlist.id);
   };
 
   const shareWishlist = (wishlistId) => {
-    const email = prompt("Enter email address to share with:");
-    if (!email) return;
-
-    console.log('Sharing wishlist', wishlistId, 'with', email);
-    setDbStatus('writing');
-
-    const shareRef = ref(database, `wishlists/${wishlistId}/shares`);
-    const newShareRef = push(shareRef);
-    
-    set(newShareRef, {
-      email,
-      status: "Shared",
-      sharedAt: new Date().toISOString()
-    })
-      .then(() => {
-        console.log('Wishlist shared successfully');
-        setDbStatus('success');
-        alert(`Wishlist shared with ${email}`);
-      })
-      .catch(error => {
-        console.error("Error sharing wishlist:", error);
-        setDbStatus('error');
-        alert(`Failed to share wishlist: ${error.message}`);
-      });
+    Swal.fire({
+      title: "Share Wishlist",
+      input: "email",
+      inputPlaceholder: "Enter recipient's email",
+      showCancelButton: true,
+      confirmButtonText: "Share",
+      cancelButtonText: "Cancel",
+      customClass: {
+        popup: 'animate__animated animate__fadeIn'
+      }
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        setDbStatus('writing');
+        const shareRef = ref(database, `wishlists/${wishlistId}/shares`);
+        const newShareRef = push(shareRef);
+        
+        set(newShareRef, {
+          email: result.value,
+          status: "Shared",
+          sharedAt: new Date().toISOString()
+        })
+          .then(() => {
+            setDbStatus('success');
+            Swal.fire({
+              title: "Shared!",
+              text: `Wishlist shared with ${result.value}`,
+              icon: "success",
+              customClass: {
+                popup: 'animate__animated animate__tada'
+              }
+            });
+          })
+          .catch(error => {
+            setDbStatus('error');
+            Swal.fire({
+              title: "Error!",
+              text: `Failed to share wishlist: ${error.message}`,
+              icon: "error",
+              customClass: {
+                popup: 'animate__animated animate__shakeX'
+              }
+            });
+          });
+      }
+    });
   };
 
   const deleteWishlist = (wishlistId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this wishlist? This action cannot be undone.");
-    
-    if (confirmDelete) {
-      console.log('Deleting wishlist:', wishlistId);
-      setDbStatus('writing');
-      
-      const wishlistRef = ref(database, `wishlists/${wishlistId}`);
-      
-      remove(wishlistRef)
-        .then(() => {
-          console.log('Wishlist deleted successfully');
-          setDbStatus('success');
-          alert('Wishlist deleted successfully');
-          if (activeWishlist && activeWishlist.id === wishlistId) {
-            setActiveWishlist(null);
-            setWishlistItems([]);
-            setSelectedWishlistId(null); // Clear selected wishlist
-          }
-          // Force refresh data
-          setRefreshKey(prevKey => prevKey + 1);
-        })
-        .catch(error => {
-          console.error("Error deleting wishlist:", error);
-          setDbStatus('error');
-          alert(`Failed to delete wishlist: ${error.message}`);
-        });
-    }
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      customClass: {
+        popup: 'animate__animated animate__fadeIn'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setDbStatus('writing');
+        const wishlistRef = ref(database, `wishlists/${wishlistId}`);
+        
+        remove(wishlistRef)
+          .then(() => {
+            setDbStatus('success');
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your wishlist has been deleted.",
+              icon: "success",
+              customClass: {
+                popup: 'animate__animated animate__tada'
+              }
+            });
+            if (activeWishlist && activeWishlist.id === wishlistId) {
+              setActiveWishlist(null);
+              setWishlistItems([]);
+              setSelectedWishlistId(null);
+            }
+            setRefreshKey(prevKey => prevKey + 1);
+          })
+          .catch(error => {
+            setDbStatus('error');
+            Swal.fire({
+              title: "Error!",
+              text: `Failed to delete wishlist: ${error.message}`,
+              icon: "error",
+              customClass: {
+                popup: 'animate__animated animate__shakeX'
+              }
+            });
+          });
+      }
+    });
   };
 
-  const addItemToWishlist = () => {
-    if (!activeWishlist) {
-      alert("Please select a wishlist first");
-      return;
-    }
-
-    console.log('Adding item to wishlist:', activeWishlist.id);
-    setDbStatus('writing');
-
-    // Simple prompt-based implementation
-    const name = prompt("Enter item name:");
-    if (!name) {
-      setDbStatus('idle');
-      return;
-    }
-    
-    const imageUrl = prompt("Enter image URL:");
-    if (!imageUrl) {
-      setDbStatus('idle');
-      return;
-    }
-    
-    const link = prompt("Enter website URL (optional):");
-    const category = prompt("Enter category (Clothing, Electronics, Books, Home, Other):");
-    const price = prompt("Enter price (e.g. 99.99):");
-    const description = prompt("Enter description or notes (optional):");
-    const priority = prompt("Enter priority (1-5, with 5 being highest):", "3");
-    
-    // Create a new wishlist item
-    const newItem = {
-      name,
-      imageUrl,
-      link: link || "",
-      category: category || "Other",
-      price: price ? parseFloat(price) : null,
-      description: description || "",
-      priority: parseInt(priority) || 3,
-      addedAt: new Date().toISOString()
-    };
-    
-    console.log('New item data:', newItem);
-    const itemsRef = ref(database, `wishlists/${activeWishlist.id}/items`);
-    const newItemRef = push(itemsRef);
-    
-    set(newItemRef, newItem)
-      .then(() => {
-        console.log('Item added successfully with key:', newItemRef.key);
-        setDbStatus('success');
-        
-        // Show success with "Show this list" option
-        Swal.fire({
-          title: "Success!",
-          text: `Item "${name}" added to your wishlist!`,
-          icon: "success",
-          showConfirmButton: true,
-          confirmButtonText: "Show this list"
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // Just refresh the current wishlist items
-            fetchWishlistItems(activeWishlist.id);
-          }
-        });
-        
-        // Force refresh items in background
-        fetchWishlistItems(activeWishlist.id);
-      })
-      .catch(error => {
-        console.error("Error adding item:", error);
-        setDbStatus('error');
-        alert(`Failed to add item: ${error.message}`);
-      });
-  };
-
-  const viewItemDetails = (item) => {
-    const detailsMessage = `
-      Name: ${item.name}
-      Category: ${item.category || 'Not specified'}
-      Price: ${item.price ? `$${item.price.toFixed(2)}` : 'Not specified'}
-      Priority: ${item.priority || 'Not specified'}
-      ${item.description ? `Description: ${item.description}` : ''}
-      ${item.addedAt ? `Added on: ${new Date(item.addedAt).toLocaleDateString()}` : ''}
-    `;
-    
-    alert(detailsMessage);
-    
-    // Ask if user wants to visit website
-    if (item.link) {
-      const visitSite = window.confirm("Would you like to visit the item's website?");
-      if (visitSite) {
+  const showItemDetailsModal = (item) => {
+    Swal.fire({
+      title: item.name,
+      html: `
+        <div class="text-left">
+          <p><strong>Category:</strong> ${item.category || 'Not specified'}</p>
+          <p><strong>Price:</strong> ${item.price ? `$${item.price.toFixed(2)}` : 'Not specified'}</p>
+          <p><strong>Priority:</strong> ${item.priority || 'Not specified'}/5</p>
+          ${item.description ? `<p><strong>Description:</strong> ${item.description}</p>` : ''}
+          ${item.addedAt ? `<p><strong>Added on:</strong> ${new Date(item.addedAt).toLocaleDateString()}</p>` : ''}
+        </div>
+      `,
+      imageUrl: item.imageUrl || "https://via.placeholder.com/150",
+      imageWidth: 200,
+      imageAlt: item.name,
+      showCancelButton: !!item.link,
+      confirmButtonText: item.link ? "Visit Website" : "OK",
+      cancelButtonText: "Close",
+      customClass: {
+        popup: 'animate__animated animate__fadeIn'
+      }
+    }).then((result) => {
+      if (result.isConfirmed && item.link) {
         window.open(item.link, '_blank');
       }
-    }
+    });
   };
 
-  const visitItemWebsite = (link) => {
-    if (link) {
-      window.open(link, '_blank');
-    } else {
-      alert('No Link Available: This item does not have a website link.');
-    }
-  };
-
-  const deleteWishlistItem = (itemId) => {
-    if (!activeWishlist) return;
-    
-    console.log("Trying to delete item:", itemId);
-    setDbStatus('writing');
-    
-    const confirmDelete = window.confirm("Are you sure? You won't be able to revert this!");
-    
-    if (confirmDelete) {
-      const itemRef = ref(database, `wishlists/${activeWishlist.id}/items/${itemId}`);
-      
-      remove(itemRef)
-        .then(() => {
-          console.log('Item deleted successfully');
-          setDbStatus('success');
-          alert('Deleted! Your wishlist item has been deleted.');
-          // Refresh the items list
-          fetchWishlistItems(activeWishlist.id);
-        })
-        .catch(err => {
-          console.error("Delete error:", err);
-          setDbStatus('error');
-          alert('Error! Could not delete the item. Please try again.');
-        });
-    } else {
-      setDbStatus('idle');
-    }
-  };
-
-  const editWishlistItem = (item) => {
-    if (!activeWishlist) return;
-    
-    console.log("Editing item with ID:", item.id);
-    setDbStatus('writing');
-    
-    // Simple prompt-based implementation
-    const name = prompt("Enter item name:", item.name || '');
-    if (!name) {
-      setDbStatus('idle');
-      return;
-    }
-    
-    const imageUrl = prompt("Enter image URL:", item.imageUrl || '');
-    if (!imageUrl) {
-      setDbStatus('idle');
-      return;
-    }
-    
-    const link = prompt("Enter website URL (optional):", item.link || '');
-    const category = prompt("Enter category (Clothing, Electronics, Books, Home, Other):", item.category || '');
-    const price = prompt("Enter price (e.g. 99.99):", item.price || '');
-    const description = prompt("Enter description or notes (optional):", item.description || '');
-    const priority = prompt("Enter priority (1-5, with 5 being highest):", item.priority || '3');
-    
-    // Update the item
-    const updatedItem = {
-      name,
-      imageUrl,
-      link: link || "",
-      category: category || "Other",
-      price: price ? parseFloat(price) : null,
-      description: description || "",
-      priority: parseInt(priority) || 3,
-      addedAt: item.addedAt || new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    
-    console.log('Updated item data:', updatedItem);
-    const itemRef = ref(database, `wishlists/${activeWishlist.id}/items/${item.id}`);
-    
-    update(itemRef, updatedItem)
-      .then(() => {
-        console.log('Item updated successfully');
-        setDbStatus('success');
-        
-        // Show success with "Show this list" option
-        Swal.fire({
-          title: "Success!",
-          text: `Item "${name}" updated successfully!`,
-          icon: "success",
-          showConfirmButton: true,
-          confirmButtonText: "Show this list"
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // Just refresh the current wishlist items
-            fetchWishlistItems(activeWishlist.id);
-          }
-        });
-        
-        // Refresh the items in background
-        fetchWishlistItems(activeWishlist.id);
-      })
-      .catch(error => {
-        console.error("Error updating item:", error);
-        setDbStatus('error');
-        alert(`Failed to update item: ${error.message}`);
-      });
-  };
-
-  const showThisList = () => {
-    if (selectedWishlistId) {
-      const selectedList = wishlists.find(list => list.id === selectedWishlistId);
-      if (selectedList) {
-        setActiveWishlist(selectedList);
-        fetchWishlistItems(selectedWishlistId);
+  const deleteWishlistItem = (itemId, itemName) => {
+    Swal.fire({
+      title: `Delete "${itemName}"?`,
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      customClass: {
+        popup: 'animate__animated animate__fadeIn'
       }
-    }
-  };
-
-  // Display database connection status
-  const renderDbStatus = () => {
-    if (dbStatus === 'disconnected') {
-      return <div className="db-status error">Database disconnected! Check your connection.</div>;
-    }
-    if (dbStatus === 'error') {
-      return <div className="db-status error">Database operation failed! Check console for details.</div>;
-    }
-    if (dbStatus === 'writing') {
-      return <div className="db-status writing">Saving to database...</div>;
-    }
-    if (dbStatus === 'success') {
-      return <div className="db-status success">Database updated successfully!</div>;
-    }
-    return null;
-  };
-
-  const renderWishlistSelector = () => {
-    return (
-      <div className="wishlist-selector">
-        <h2>My Wishlists</h2>
-        <div className="wishlist-actions">
-          <button onClick={() => createNewWishlist()}>Create New Wishlist</button>
-          {selectedWishlistId && (
-            <button onClick={showThisList} className="show-list-btn">Show this list</button>
-          )}
-        </div>
-        <div className="wishlists-list">
-          {wishlists.length === 0 ? (
-            <p>You haven't created any wishlists yet</p>
-          ) : (
-            wishlists.map(wishlist => (
-              <div 
-                key={wishlist.id} 
-                className={`wishlist-entry ${activeWishlist && activeWishlist.id === wishlist.id ? 'active' : ''}`}
-                onClick={() => selectWishlist(wishlist)}
-              >
-                <h3>{wishlist.title}</h3>
-                <p>{wishlist.description}</p>
-                <div className="wishlist-meta">
-                  <span>Privacy: {wishlist.privacy}</span>
-                  <span>Created: {new Date(wishlist.createdAt).toLocaleDateString()}</span>
-                </div>
-                <div className="wishlist-actions">
-                  <button onClick={(e) => {
-                    e.stopPropagation();
-                    shareWishlist(wishlist.id);
-                  }}>Share</button>
-                  <button onClick={(e) => {
-                    e.stopPropagation();
-                    deleteWishlist(wishlist.id);
-                  }}>Delete</button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const renderWishlistItems = () => {
-    if (!activeWishlist) {
-      return (
-        <div className="no-wishlist-selected">
-          <h2>No wishlist selected</h2>
-          <p>Please select a wishlist or create a new one.</p>
-        </div>
-      );
-    }
-
-    if (loading) {
-      return <div className="loading">Loading your wishlist items...</div>;
-    }
-
-    return (
-      <div className="wishlist-view">
-        <div className="wishlist-header">
-          <h2>{activeWishlist.title}</h2>
-          <p>{activeWishlist.description}</p>
-          <div className="add-item-container">
-            <button onClick={addItemToWishlist}>Add Item to Wishlist</button>
-            {selectedWishlistId === activeWishlist.id && (
-              <button onClick={showThisList} className="show-list-btn">Show this list</button>
-            )}
-          </div>
-        </div>
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setDbStatus('writing');
+        const itemRef = ref(database, `wishlists/${activeWishlist.id}/items/${itemId}`);
         
-        {wishlistItems.length === 0 ? (
-          <div className="empty-wishlist">
-            <p>You haven't added any items to this wishlist yet</p>
-          </div>
-        ) : (
-          <div className="wishlist-container">
-            {wishlistItems.map((item) => (
-              <div key={item.id} className="wishlist-item">
-                <div className="item-image" onClick={() => item.link && visitItemWebsite(item.link)}>
-                  <img src={item.imageUrl || "https://via.placeholder.com/150"} alt={item.name} />
-                  {item.price && <div className="item-price">${item.price.toFixed(2)}</div>}
-                </div>
-                <div className="item-content">
-                  <h3>{item.name}</h3>
-                  <div className="item-category">Category: {item.category}</div>
-                  {item.description && <div className="item-description">{item.description}</div>}
-                  <div className="item-priority">Priority: {item.priority}/5</div>
-                  <div className="item-actions">
-                    <button onClick={() => viewItemDetails(item)}>View Details</button>
-                    <button onClick={() => editWishlistItem(item)}>Edit</button>
-                    <button onClick={() => deleteWishlistItem(item.id)}>Delete</button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
+        remove(itemRef)
+          .then(() => {
+            setDbStatus('success');
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your item has been deleted.",
+              icon: "success",
+              customClass: {
+                popup: 'animate__animated animate__tada'
+              }
+            });
+            fetchWishlistItems(activeWishlist.id);
+          })
+          .catch(error => {
+            setDbStatus('error');
+            Swal.fire({
+              title: "Error!",
+              text: `Failed to delete item: ${error.message}`,
+              icon: "error",
+              customClass: {
+                popup: 'animate__animated animate__shakeX'
+              }
+            });
+          });
+      }
+    });
+  };
+
+  const showAddItemModal = () => {
+    if (!activeWishlist) {
+      Swal.fire({
+        title: "No Wishlist Selected",
+        text: "Please select a wishlist first",
+        icon: "warning",
+        customClass: {
+          popup: 'animate__animated animate__headShake'
+        }
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: `Add Item to "${activeWishlist.title}"`,
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="Item Name" required>
+        <input id="swal-input2" class="swal2-input" placeholder="Image URL">
+        <input id="swal-input3" class="swal2-input" placeholder="Website URL (optional)">
+        <select id="swal-input4" class="swal2-input">
+          <option value="Other">Other</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Books">Books</option>
+          <option value="Home">Home</option>
+        </select>
+        <input id="swal-input5" class="swal2-input" placeholder="Price (e.g. 99.99)" type="number" step="0.01">
+        <textarea id="swal-input6" class="swal2-textarea" placeholder="Description (optional)"></textarea>
+        <select id="swal-input7" class="swal2-input">
+          <option value="3">Medium Priority</option>
+          <option value="1">Low Priority</option>
+          <option value="5">High Priority</option>
+        </select>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          name: document.getElementById('swal-input1').value,
+          imageUrl: document.getElementById('swal-input2').value,
+          link: document.getElementById('swal-input3').value,
+          category: document.getElementById('swal-input4').value,
+          price: document.getElementById('swal-input5').value,
+          description: document.getElementById('swal-input6').value,
+          priority: document.getElementById('swal-input7').value
+        };
+      },
+      customClass: {
+        popup: 'animate__animated animate__fadeIn'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const { name, imageUrl, link, category, price, description, priority } = result.value;
+        
+        if (!name) {
+          Swal.fire({
+            title: "Oops!",
+            text: "Item name is required",
+            icon: "warning",
+            customClass: {
+              popup: 'animate__animated animate__headShake'
+            }
+          });
+          return;
+        }
+
+        setDbStatus('writing');
+        const newItem = {
+          name,
+          imageUrl: imageUrl || "",
+          link: link || "",
+          category: category || "Other",
+          price: price ? parseFloat(price) : null,
+          description: description || "",
+          priority: parseInt(priority) || 3,
+          addedAt: new Date().toISOString()
+        };
+        
+        const itemsRef = ref(database, `wishlists/${activeWishlist.id}/items`);
+        const newItemRef = push(itemsRef);
+        
+        set(newItemRef, newItem)
+          .then(() => {
+            setDbStatus('success');
+            Swal.fire({
+              title: "Success!",
+              html: `<p class="animate__animated animate__tada"><FaGift /> ${name} added to ${activeWishlist.title}</p>`,
+              icon: "success",
+              customClass: {
+                popup: 'animate__animated animate__fadeIn'
+              }
+            });
+            fetchWishlistItems(activeWishlist.id);
+          })
+          .catch(error => {
+            setDbStatus('error');
+            Swal.fire({
+              title: "Error!",
+              text: `Failed to add item: ${error.message}`,
+              icon: "error",
+              customClass: {
+                popup: 'animate__animated animate__shakeX'
+              }
+            });
+          });
+      }
+    });
+  };
+
+  const renderDbStatusAlert = () => {
+    switch (dbStatus) {
+      case 'disconnected':
+        return <Alert variant="danger" className="animate__animated animate__fadeIn">Database disconnected! Check your connection.</Alert>;
+      case 'error':
+        return <Alert variant="danger" className="animate__animated animate__shakeX">Database operation failed!</Alert>;
+      case 'writing':
+        return <Alert variant="info" className="animate__animated animate__fadeIn">
+          <Spinner animation="border" size="sm" className="mr-2" /> Saving to database...
+        </Alert>;
+      case 'success':
+        return <Alert variant="success" className="animate__animated animate__fadeIn">Database updated successfully!</Alert>;
+      default:
+        return null;
+    }
   };
 
   if (!currentUser) {
     return (
-      <div className="wishlist-page">
-        <h1>My Wishlist</h1>
-        <div className="auth-required">
-          <p>Please log in to view and manage your wishlists</p>
-        </div>
-      </div>
+      <Container className="my-5 text-center animate__animated animate__fadeIn">
+        <h1><FaShoppingBasket /> My Wishlist</h1>
+        <Alert variant="info" className="mt-4">
+          Please log in to view and manage your wishlists
+        </Alert>
+      </Container>
     );
   }
 
   return (
-    <div className="wishlist-page">
-      <h1>My Wishlist Manager</h1>
-      {renderDbStatus()}
-      <div className="wishlist-dashboard">
-        {renderWishlistSelector()}
-        {renderWishlistItems()}
-      </div>
+    <Container fluid className="my-4 animate__animated animate__fadeIn">
+      <Row>
+        <Col md={12}>
+          <h1 className="text-center mb-4"><FaShoppingBasket /> My Wishlist Manager</h1>
+          {renderDbStatusAlert()}
+        </Col>
+      </Row>
       
+      <Row>
+        {/* Wishlist Selector Column */}
+        <Col md={4} className="mb-4">
+          <Card className="h-100 shadow-sm">
+            <Card.Header className="bg-primary text-white">
+              <h2 className="mb-0"><FaListUl /> My Wishlists</h2>
+            </Card.Header>
+            <Card.Body className="d-flex flex-column">
+              <Button 
+                variant="success" 
+                className="mb-3 align-self-start"
+                onClick={() => setShowCreateModal(true)}
+              >
+                <FaPlus /> Create New
+              </Button>
+              
+              {selectedWishlistId && (
+                <Button 
+                  variant="info" 
+                  className="mb-3 align-self-start"
+                  onClick={() => {
+                    const selectedList = wishlists.find(list => list.id === selectedWishlistId);
+                    if (selectedList) {
+                      setActiveWishlist(selectedList);
+                      fetchWishlistItems(selectedWishlistId);
+                    }
+                  }}
+                >
+                  <FaEye /> Show Selected List
+                </Button>
+              )}
+              
+              {wishlists.length === 0 ? (
+                <Alert variant="info" className="mt-3">
+                  You haven't created any wishlists yet
+                </Alert>
+              ) : (
+                <ListGroup className="overflow-auto" style={{ maxHeight: '500px' }}>
+                  {wishlists.map(wishlist => (
+                    <ListGroup.Item 
+                      key={wishlist.id}
+                      action
+                      active={activeWishlist?.id === wishlist.id}
+                      onClick={() => selectWishlist(wishlist)}
+                      className="d-flex justify-content-between align-items-center animate__animated animate__fadeIn"
+                    >
+                      <div>
+                        <h5 className="mb-1">{wishlist.title}</h5>
+                        <small className="text-muted">
+                          {wishlist.description || 'No description'}
+                        </small>
+                        <div>
+                          <Badge variant={wishlist.privacy === 'public' ? 'success' : 'secondary'} className="mr-2">
+                            {wishlist.privacy}
+                          </Badge>
+                          <small>
+                            {new Date(wishlist.createdAt).toLocaleDateString()}
+                          </small>
+                        </div>
+                      </div>
+                      <div>
+                        <Button 
+                          variant="outline-primary" 
+                          size="sm" 
+                          className="mr-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            shareWishlist(wishlist.id);
+                          }}
+                        >
+                          <FaShare />
+                        </Button>
+                        <Button 
+                          variant="outline-danger" 
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteWishlist(wishlist.id);
+                          }}
+                        >
+                          <FaTrash />
+                        </Button>
+                      </div>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+            </Card.Body>
+          </Card>
+        </Col>
+        
+        {/* Wishlist Items Column */}
+        <Col md={8}>
+          {!activeWishlist ? (
+            <Card className="h-100 shadow-sm">
+              <Card.Body className="text-center d-flex flex-column justify-content-center">
+                <h2 className="text-muted mb-4">No wishlist selected</h2>
+                <p>Please select a wishlist from the left or create a new one</p>
+                <Button 
+                  variant="primary" 
+                  onClick={() => setShowCreateModal(true)}
+                  className="mt-3"
+                >
+                  <FaPlus /> Create New Wishlist
+                </Button>
+              </Card.Body>
+            </Card>
+          ) : loading ? (
+            <Card className="h-100 shadow-sm">
+              <Card.Body className="text-center d-flex flex-column justify-content-center">
+                <Spinner animation="border" variant="primary" />
+                <p className="mt-3">Loading your wishlist items...</p>
+              </Card.Body>
+            </Card>
+          ) : (
+            <Card className="h-100 shadow-sm">
+              <Card.Header className="bg-primary text-white">
+                <div className="d-flex justify-content-between align-items-center">
+                  <h2 className="mb-0">{activeWishlist.title}</h2>
+                  <Button 
+                    variant="light" 
+                    size="sm"
+                    onClick={showAddItemModal}
+                  >
+                    <FaPlus /> Add Item
+                  </Button>
+                </div>
+                {activeWishlist.description && (
+                  <p className="mb-0 mt-1">{activeWishlist.description}</p>
+                )}
+              </Card.Header>
+              <Card.Body className="overflow-auto" style={{ maxHeight: '600px' }}>
+                {wishlistItems.length === 0 ? (
+                  <Alert variant="info" className="text-center">
+                    You haven't added any items to this wishlist yet
+                  </Alert>
+                ) : (
+                  <Row>
+                    {wishlistItems.map((item) => (
+                      <Col md={6} lg={4} key={item.id} className="mb-4 animate__animated animate__fadeIn">
+                        <Card className="h-100">
+                          <div 
+                            className="position-relative" 
+                            style={{ cursor: item.link ? 'pointer' : 'default' }}
+                            onClick={() => item.link ? window.open(item.link, '_blank') : null}
+                          >
+                            <Card.Img 
+                              variant="top" 
+                              src={item.imageUrl || "https://via.placeholder.com/150"} 
+                              alt={item.name}
+                              style={{ height: '200px', objectFit: 'cover' }}
+                            />
+                            {item.price && (
+                              <Badge 
+                                pill 
+                                variant="success" 
+                                className="position-absolute"
+                                style={{ top: '10px', right: '10px' }}
+                              >
+                                ${item.price.toFixed(2)}
+                              </Badge>
+                            )}
+                          </div>
+                          <Card.Body>
+                            <Card.Title>{item.name}</Card.Title>
+                            <Card.Subtitle className="mb-2 text-muted">
+                              {item.category}
+                            </Card.Subtitle>
+                            {item.description && (
+                              <Card.Text className="text-truncate">
+                                {item.description}
+                              </Card.Text>
+                            )}
+                            <div className="d-flex justify-content-between align-items-center">
+                              <Badge variant="info">
+                                Priority: {item.priority}/5
+                              </Badge>
+                              <div>
+                                <Button 
+                                  variant="outline-primary" 
+                                  size="sm" 
+                                  className="mr-1"
+                                  onClick={() => showItemDetailsModal(item)}
+                                >
+                                  <FaEye />
+                                </Button>
+                                <Button 
+                                  variant="outline-secondary" 
+                                  size="sm" 
+                                  className="mr-1"
+                                  onClick={() => {
+                                    // Implement edit functionality
+                                    showAddItemModal(); // Reusing the add modal for edit
+                                  }}
+                                >
+                                  <FaEdit />
+                                </Button>
+                                <Button 
+                                  variant="outline-danger" 
+                                  size="sm"
+                                  onClick={() => deleteWishlistItem(item.id, item.name)}
+                                >
+                                  <FaTrash />
+                                </Button>
+                              </div>
+                            </div>
+                          </Card.Body>
+                        </Card>
+                      </Col>
+                    ))}
+                  </Row>
+                )}
+              </Card.Body>
+            </Card>
+          )}
+        </Col>
+      </Row>
       
-    </div>
+      {/* Create Wishlist Modal */}
+      <Modal show={showCreateModal} onHide={() => setShowCreateModal(false)} centered>
+        <Modal.Header closeButton className="bg-primary text-white">
+          <Modal.Title><FaPlus /> Create New Wishlist</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="wishlistTitle">
+              <Form.Label>Title</Form.Label>
+              <Form.Control 
+                type="text" 
+                placeholder="Enter wishlist title" 
+                value={newWishlistTitle}
+                onChange={(e) => setNewWishlistTitle(e.target.value)}
+                required
+              />
+            </Form.Group>
+            
+            <Form.Group controlId="wishlistDescription">
+              <Form.Label>Description (optional)</Form.Label>
+              <Form.Control 
+                as="textarea" 
+                rows={3} 
+                placeholder="Enter description" 
+                value={newWishlistDesc}
+                onChange={(e) => setNewWishlistDesc(e.target.value)}
+              />
+            </Form.Group>
+            
+            <Form.Group controlId="wishlistPrivacy">
+              <Form.Label>Privacy Setting</Form.Label>
+              <Form.Control 
+                as="select" 
+                value={newWishlistPrivacy}
+                onChange={(e) => setNewWishlistPrivacy(e.target.value)}
+              >
+                <option value="private">Private (only you can see)</option>
+                <option value="public">Public (anyone with link can see)</option>
+              </Form.Control>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowCreateModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleCreateWishlist}>
+            Create Wishlist
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
   );
 };
 

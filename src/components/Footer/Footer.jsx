@@ -9,7 +9,7 @@ const Footer = () => {
 
   return (
     <footer className="footer-wrapper">
-      <Container>
+['']      <Container>
         {/* Main Footer Content */}
         <Row className="footer-main py-5">
           <Col md={4} className="mb-4 mb-md-0">
