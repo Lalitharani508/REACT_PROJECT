@@ -626,17 +626,7 @@ const GiftIdeas = () => {
       setLoading(false);
       
       // Success notification
-      Swal.fire({
-        title: "Gift Ideas Loaded!",
-        text: `${localGiftData.length} gift ideas found`,
-        icon: "success",
-        showClass: {
-          popup: 'animate__animated animate__fadeInDown'
-        },
-        hideClass: {
-          popup: 'animate__animated animate__fadeOutUp'
-        }
-      });
+      
     }, 1000); // Simulate 1 second loading time
 
     // Don't fetch wishlists here, we'll do it when user changes
@@ -1001,8 +991,7 @@ const GiftIdeas = () => {
         <div className="text-center mb-4">
           <p>
             {userWishlists.length > 0 ? 
-              `You have ${userWishlists.length} wishlist(s). Active: ${activeWishlistId ? 
-                userWishlists.find(list => list.id === activeWishlistId)?.title : 'None'}` : 
+              `You have ${userWishlists.length} wishlist.` : 
               'You have no wishlists yet. Adding items will create one for you.'}
           </p>
         </div>

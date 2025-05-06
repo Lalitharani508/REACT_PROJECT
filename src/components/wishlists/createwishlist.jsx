@@ -700,34 +700,19 @@ const Createwishlist = ({ giftItem }) => {
         {/* Wishlist Selector Column */}
         <Col md={4} className="mb-4">
           <Card className="h-100 shadow-sm">
-            <Card.Header className="bg-primary text-white">
+            {/* <Card.Header className="bg-primary text-white">
               <h2 className="mb-0"><FaListUl /> My Wishlists</h2>
-            </Card.Header>
+            </Card.Header> */}
             <Card.Body className="d-flex flex-column">
               <Button 
-                variant="success" 
+                variant="dark" 
                 className="mb-3 align-self-start"
                 onClick={() => setShowCreateModal(true)}
               >
                 <FaPlus /> Create New
               </Button>
               
-              {selectedWishlistId && (
-                <Button 
-                  variant="info" 
-                  className="mb-3 align-self-start"
-                  onClick={() => {
-                    const selectedList = wishlists.find(list => list.id === selectedWishlistId);
-                    if (selectedList) {
-                      setActiveWishlist(selectedList);
-                      fetchWishlistItems(selectedWishlistId);
-                    }
-                  }}
-                >
-                  <FaEye /> Show Selected List
-                </Button>
-              )}
-              
+             
               {wishlists.length === 0 ? (
                 <Alert variant="info" className="mt-3">
                   You haven't created any wishlists yet
