@@ -979,16 +979,16 @@ const GiftIdeas = () => {
     setGifts(allGifts);
   };
 
-  if (loading) {
-    return (
-      <Container className="text-center mt-5">
-        <div className="animate__animated animate__pulse animate__infinite">
-          <FaSpinner className="fa-spin" size={30} />
-          <h3 className="mt-3">Loading gift ideas...</h3>
-        </div>
-      </Container>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <Container className="text-center mt-5">
+  //       <div className="animate__animated animate__pulse animate__infinite">
+  //         <FaSpinner className="fa-spin" size={30} />
+  //         <h3 className="mt-3">Loading gift ideas...</h3>
+  //       </div>
+  //     </Container>
+  //   );
+  // }
 
   return (
     <Container className="py-5">

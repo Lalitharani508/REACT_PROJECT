@@ -53,7 +53,7 @@ const Header = () => {
       <Navbar bg="primary" variant="dark" expand="lg" className="animate__animated animate__fadeInDown">
         <Container fluid>
           <Navbar.Brand href="#" className="fs-3 fw-bold animate__animated animate__pulse animate__infinite">
-            Lalitha's Wishlist
+            My Wishlist
           </Navbar.Brand>
           
           <Navbar.Toggle 

@@ -35,9 +35,9 @@ import {
   FaLink,
   FaShoppingBasket,
   FaListUl,
-  FaGift
+  // FaGift
 } from 'react-icons/fa';
-
+import emailjs from '@emailjs/browser';
 const Createwishlist = ({ giftItem }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [wishlists, setWishlists] = useState([]);
@@ -51,6 +51,11 @@ const Createwishlist = ({ giftItem }) => {
   const [newWishlistTitle, setNewWishlistTitle] = useState('');
   const [newWishlistDesc, setNewWishlistDesc] = useState('');
   const [newWishlistPrivacy, setNewWishlistPrivacy] = useState('private');
+
+  useEffect(() => {
+    // Initialize EmailJS with your public key
+    emailjs.init("1m2P7j9PCId-S9AVJ");
+  }, []);
 
   const auth = getAuth();
 
@@ -353,30 +358,66 @@ const Createwishlist = ({ giftItem }) => {
     }).then((result) => {
       if (result.isConfirmed && result.value) {
         setDbStatus('writing');
+        const recipientEmail = result.value;
+        
+        // First, save to Firebase database.
         const shareRef = ref(database, `wishlists/${wishlistId}/shares`);
         const newShareRef = push(shareRef);
         
-        set(newShareRef, {
-          email: result.value,
-          status: "Shared",
-          sharedAt: new Date().toISOString()
-        })
-          .then(() => {
-            setDbStatus('success');
-            Swal.fire({
-              title: "Shared!",
-              text: `Wishlist shared with ${result.value}`,
-              icon: "success",
-              customClass: {
-                popup: 'animate__animated animate__tada'
-              }
-            });
+        // Get wishlist data to include in the email
+        get(ref(database, `wishlists/${wishlistId}`))
+          .then((wishlistSnapshot) => {
+            const wishlistData = wishlistSnapshot.val();
+            
+            set(newShareRef, {
+              email: recipientEmail,
+              status: "Shared",
+              sharedAt: new Date().toISOString()
+            })
+              .then(() => {
+                // Now send email notification with EmailJS
+                const templateParams = {
+                  to_email: recipientEmail,
+                  from_name: wishlistData.createdBy || "A friend",
+                  wishlist_name: wishlistData.name || "My Wishlist",
+                  wishlist_link: `${window.location.origin}/wishlist/${wishlistId}`,
+                  message: `${wishlistData.createdBy || "Someone"} has shared a wishlist with you!`
+                };
+                
+                return emailjs.send(
+                  'service_82adl3h',
+                  'template_86172xt',
+                  templateParams
+                );
+              })
+              .then(() => {
+                setDbStatus('success');
+                Swal.fire({
+                  title: "Shared!",
+                  text: `Wishlist shared with ${recipientEmail}`,
+                  icon: "success",
+                  customClass: {
+                    popup: 'animate__animated animate__tada'
+                  }
+                });
+              })
+              .catch(error => {
+                setDbStatus('error');
+                Swal.fire({
+                  title: "Error!",
+                  text: `Failed to share wishlist: ${error.message}`,
+                  icon: "error",
+                  customClass: {
+                    popup: 'animate__animated animate__shakeX'
+                  }
+                });
+              });
           })
           .catch(error => {
             setDbStatus('error');
             Swal.fire({
               title: "Error!",
-              text: `Failed to share wishlist: ${error.message}`,
+              text: `Failed to fetch wishlist data: ${error.message}`,
               icon: "error",
               customClass: {
                 popup: 'animate__animated animate__shakeX'
@@ -841,17 +882,7 @@ const Createwishlist = ({ giftItem }) => {
                                 >
                                   <FaEye />
                                 </Button>
-                                <Button 
-                                  variant="outline-secondary" 
-                                  size="sm" 
-                                  className="mr-1"
-                                  onClick={() => {
-                                    // Implement edit functionality
-                                    showAddItemModal(); // Reusing the add modal for edit
-                                  }}
-                                >
-                                  <FaEdit />
-                                </Button>
+                                
                                 <Button 
                                   variant="outline-danger" 
                                   size="sm"
