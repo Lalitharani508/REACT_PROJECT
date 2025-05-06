@@ -689,12 +689,7 @@ const Createwishlist = ({ giftItem }) => {
 
   return (
     <Container fluid className="my-4 animate__animated animate__fadeIn">
-      <Row>
-        <Col md={12}>
-          <h1 className="text-center mb-4"><FaShoppingBasket /> My Wishlist Manager</h1>
-          {renderDbStatusAlert()}
-        </Col>
-      </Row>
+      
       
       <Row>
         {/* Wishlist Selector Column */}

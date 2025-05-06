@@ -1182,11 +1182,7 @@ const GiftIdeas = () => {
                         </div>
                       )}
                     </div>
-                    {gift.description && (
-                      <Card.Text className="small text-truncate">
-                        {gift.description}
-                      </Card.Text>
-                    )}
+                    
                     <div className="d-flex justify-content-between mt-3">
                       <Button 
                         variant="primary" 

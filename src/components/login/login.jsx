@@ -1,10 +1,10 @@
 import Swal from "sweetalert2";
 import { author } from "../../firebaseconfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import {React, useState} from "react";
+import { React, useState } from "react";
 import { Form, Button, Container, Card, Row, Col } from 'react-bootstrap';
-import './login.css'
-import {useNavigate} from 'react-router-dom'
+import './login.css';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -12,78 +12,75 @@ const Login = () => {
         email: "",
         password: ""
     });
-    // Add loading state
     const [isLoading, setIsLoading] = useState(false);
-    // Add error message state
     const [errorMessage, setErrorMessage] = useState("");
 
-    const handleloginDetails = (e) => {
-        setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value });
-        // Clear any previous error when user starts typing
-        setErrorMessage("");
-    };
-
-    const handlesubmitlogin = async (e) => {
-        e.preventDefault();
+    // Centralized login handler
+    const handleLogin = async (email, password, isGuest = false) => {
         setIsLoading(true);
         setErrorMessage("");
-        const { email, password } = loginDetails;
-        
-        console.log("Attempting login with:", { email }); // Log for debugging (don't log password)
         
         try {
-            if (!author) {
-                throw new Error("Firebase auth object is not initialized");
-            }
-            
-            await signInWithEmailAndPassword(author, email, password);
-            console.log("Login successful");
             
             Swal.fire({
                 title: 'Success!',
-                text: 'Logged in successfully!',
+                text: isGuest ? 'Guest login successful!' : 'Logged in successfully!',
                 icon: 'success',
-                showClass: {
-                    popup: 'animate__animated animate__fadeInDown'
-                },
-                hideClass: {
-                    popup: 'animate__animated animate__fadeOutUp'
-                }
+                showClass: { popup: 'animate__animated animate__fadeInDown' },
+                hideClass: { popup: 'animate__animated animate__fadeOutUp' }
             });
             
             navigate("/dashboard");
         } catch (err) {
-            console.error("Login error:", err.code, err.message);
+            let errorText = isGuest 
+                ? 'Failed to login as guest. Try again.' 
+                : 'Invalid email or password.';
             
-            // Set more specific error messages based on Firebase error codes
-            let errorText = 'Failed to log in. Please check your credentials.';
-            
-            if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-                errorText = 'Invalid email or password. Please try again.';
-            } else if (err.code === 'auth/invalid-email') {
-                errorText = 'Invalid email format.';
-            } else if (err.code === 'auth/too-many-requests') {
-                errorText = 'Too many failed login attempts. Please try again later.';
-            } else if (err.code === 'auth/network-request-failed') {
-                errorText = 'Network error. Please check your connection.';
+            switch (err.code) {
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                    errorText = isGuest ? 'Invalid guest credentials.' : errorText;
+                    break;
+                case 'auth/invalid-email':
+                    errorText = 'Invalid email format.';
+                    break;
+                case 'auth/too-many-requests':
+                    errorText = 'Too many attempts. Try later.';
+                    break;
+                case 'auth/network-request-failed':
+                    errorText = 'Network error. Check connection.';
+                    break;
             }
             
             setErrorMessage(errorText);
-            
             Swal.fire({
                 title: 'Error!',
                 text: errorText,
                 icon: 'error',
-                showClass: {
-                    popup: 'animate__animated animate__shakeX'
-                },
-                hideClass: {
-                    popup: 'animate__animated animate__fadeOutUp'
-                }
+                showClass: { popup: 'animate__animated animate__shakeX' },
+                hideClass: { popup: 'animate__animated animate__fadeOutUp' }
             });
         } finally {
             setIsLoading(false);
         }
+    };
+
+    // Regular form submission
+    const handlesubmitlogin = (e) => {
+        e.preventDefault();
+        const { email, password } = loginDetails;
+        handleLogin(email, password);
+    };
+
+    // Guest login handler
+    const handleGuestLogin = (e) => {
+        e.preventDefault();
+        handleLogin('guest@example.com', 'guestpassword', true); // Replace with actual credentials
+    };
+
+    const handleloginDetails = (e) => {
+        setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value });
+        setErrorMessage("");
     };
 
     return (
@@ -92,6 +89,7 @@ const Login = () => {
                 <Card.Body>
                     <Card.Title className="text-center mb-4 login-title">Welcome Back!</Card.Title>
                     <Form onSubmit={handlesubmitlogin}>
+                        {/* Email and Password fields remain unchanged */}
                         <Form.Group className="mb-3">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
@@ -118,11 +116,7 @@ const Login = () => {
                             />
                         </Form.Group>
 
-                        {errorMessage && (
-                            <div className="text-danger mb-3">
-                                {errorMessage}
-                            </div>
-                        )}
+                        {errorMessage && <div className="text-danger mb-3">{errorMessage}</div>}
 
                         <Button 
                             variant="primary" 
@@ -131,6 +125,16 @@ const Login = () => {
                             disabled={isLoading}
                         >
                             {isLoading ? 'Logging in...' : 'Login'}
+                        </Button>
+
+                        {/* Guest Login Button */}
+                        <Button 
+                            variant="outline-secondary" 
+                            className="w-100 guest-button mb-3"
+                            onClick={handleGuestLogin}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Logging in...' : 'Continue as Guest'}
                         </Button>
 
                         <Row className="text-center">

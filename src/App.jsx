@@ -13,19 +13,17 @@ import FooterAlt from "./components/Footer/Footer";
 import LandingPage from "./components/navbar/navbar";
 const App = () => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  
 
   useEffect(() => {
     const userloggedin= onAuthStateChanged(author, (currentUser) => {
       setUser(currentUser);
-      setLoading(false);
+      
     });
     return () => userloggedin();
   }, []);
 
-  if (loading) {
-    return <h1>Your going to Dashboard</h1>;
-  }
+  
 
   return (
     <div>
