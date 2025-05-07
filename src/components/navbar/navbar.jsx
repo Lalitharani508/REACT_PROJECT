@@ -46,7 +46,7 @@ const Navbar1 = () => {
                     onClick={() => navigate("/")} 
                     className="navbar-brand animate__animated animate__pulse animate__infinite animate__slow"
                 >
-                    <span className="brand-text">✨ Wish Well</span>
+                    <span className="brand-text">✨ Wish Vault</span>
                 </Navbar.Brand>
                 
                 <Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0 shadow-none" />

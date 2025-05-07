@@ -10,7 +10,7 @@ import Createwishlist from "./components/wishlists/createwishlist";
 import { Navigate } from "react-router-dom";
 import Settings from "./components/settings/Settings";
 import FooterAlt from "./components/Footer/Footer";
-import LandingPage from "./components/navbar/navbar";
+import Navbar1 from "./components/navbar/navbar";
 const App = () => {
   const [user, setUser] = useState(null);
   
@@ -28,10 +28,11 @@ const App = () => {
   return (
     <div>
       {/* Navbar always shows regardless of authentication */}
-      {/* <LandingPage/> */}
+      <Navbar1/>
        <Dashboard/>
       
       <Routes>
+        <Route path="/" element={<Navbar1 />}/>
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={user ?<Createwishlist />:<Navigate to="./login"/>} />
