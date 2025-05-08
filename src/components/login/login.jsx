@@ -15,16 +15,23 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
-    // Centralized login handler
-    const handleLogin = async (email, password, isGuest = false) => {
+    // Centralized login handler for registered users
+    const handleLogin = async (email, password) => {
         setIsLoading(true);
         setErrorMessage("");
         
         try {
+            // Use Firebase authentication for users
+            const userCredential = await signInWithEmailAndPassword(author, email, password);
+            const user = userCredential.user;
+            
+            // Store user info in session
+            sessionStorage.setItem('userRole', 'registered');
+            sessionStorage.setItem('userId', user.uid);
             
             Swal.fire({
                 title: 'Success!',
-                text: isGuest ? 'Guest login successful!' : 'Logged in successfully!',
+                text: 'Logged in successfully!',
                 icon: 'success',
                 showClass: { popup: 'animate__animated animate__fadeInDown' },
                 hideClass: { popup: 'animate__animated animate__fadeOutUp' }
@@ -32,23 +39,24 @@ const Login = () => {
             
             navigate("/dashboard");
         } catch (err) {
-            let errorText = isGuest 
-                ? 'Failed to login as guest. Try again.' 
-                : 'Invalid email or password.';
+            let errorText = 'Invalid email or password.';
             
             switch (err.code) {
-                case 'auth/user-not-found':
-                case 'auth/wrong-password':
-                    errorText = isGuest ? 'Invalid guest credentials.' : errorText;
+                case 'author/user-not-found':
+                case 'author/wrong-password':
+                    errorText = 'Invalid email or password.';
                     break;
-                case 'auth/invalid-email':
+                case 'author/invalid-email':
                     errorText = 'Invalid email format.';
                     break;
-                case 'auth/too-many-requests':
+                case 'author/too-many-requests':
                     errorText = 'Too many attempts. Try later.';
                     break;
-                case 'auth/network-request-failed':
+                case 'author/network-request-failed':
                     errorText = 'Network error. Check connection.';
+                    break;
+                default:
+                    errorText = `Login error: ${err.message}`;
                     break;
             }
             
@@ -65,23 +73,25 @@ const Login = () => {
         }
     };
 
-    // Regular form submission
+    // Form submission
     const handlesubmitlogin = (e) => {
         e.preventDefault();
         const { email, password } = loginDetails;
         handleLogin(email, password);
     };
 
-    // Guest login handler
-    const handleGuestLogin = (e) => {
-        e.preventDefault();
-        handleLogin('guest@example.com', 'guestpassword', true); // Replace with actual credentials
-    };
-
     const handleloginDetails = (e) => {
         setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value });
         setErrorMessage("");
     };
+    const handleguestlogin=(e)=>{
+        e.preventDefault
+        const {email, password} = {email: "guest@gmail.com", password: "123456"}
+        handleLogin(email, password)
+
+        
+    }
+ 
 
     return (
         <Container fluid className="login-container d-flex justify-content-center align-items-center">
@@ -89,7 +99,6 @@ const Login = () => {
                 <Card.Body>
                     <Card.Title className="text-center mb-4 login-title">Welcome Back!</Card.Title>
                     <Form onSubmit={handlesubmitlogin}>
-                        {/* Email and Password fields remain unchanged */}
                         <Form.Group className="mb-3">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
@@ -126,16 +135,7 @@ const Login = () => {
                         >
                             {isLoading ? 'Logging in...' : 'Login'}
                         </Button>
-
-                        {/* Guest Login Button */}
-                        <Button 
-                            variant="outline-secondary" 
-                            className="w-100 guest-button mb-3"
-                            onClick={handleGuestLogin}
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Logging in...' : 'Continue as Guest'}
-                        </Button>
+                        <Button onClick={handleguestlogin}>Continue as Guest</Button>
 
                         <Row className="text-center">
                             <Col>
@@ -143,6 +143,7 @@ const Login = () => {
                                     Sign Up
                                 </Button>
                             </Col>
+                            
                         </Row>
                     </Form>
                 </Card.Body>

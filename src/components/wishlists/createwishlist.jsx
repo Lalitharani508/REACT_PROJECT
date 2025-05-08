@@ -38,6 +38,7 @@ import {
   // FaGift
 } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
+import { generateEmailHtml } from "../Email_Template/EmailTemplate";
 const Createwishlist = ({ giftItem }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [wishlists, setWishlists] = useState([]);
@@ -58,7 +59,6 @@ const Createwishlist = ({ giftItem }) => {
   }, []);
 
   const auth = getAuth();
-
   // Database connection check (same as before)
   useEffect(() => {
     const testRef = ref(database, ".info/connected");
@@ -175,6 +175,7 @@ const Createwishlist = ({ giftItem }) => {
         setLoading(false);
       });
   };
+  // console.log(fetchWishlistItems())
 
   const showWishlistSelectionModal = (gift) => {
     if (!wishlists.length) {
@@ -360,6 +361,8 @@ const Createwishlist = ({ giftItem }) => {
   };
 
   const shareWishlist = (wishlistId) => {
+    const htmlContent = generateEmailHtml(wishlistItems)
+    console.log(htmlContent)
     Swal.fire({
       title: "Share Wishlist",
       input: "email",
@@ -396,9 +399,14 @@ const Createwishlist = ({ giftItem }) => {
                   from_name: wishlistData.createdBy || "A friend",
                   wishlist_name: wishlistData.name || "My Wishlist",
                   wishlist_link: `${window.location.origin}/wishlist/${wishlistId}`,
+                  // message: `${
+                  //   wishlistData.createdBy || "Someone"
+                  // } has shared a wishlist with you!`,
+                  // wishlist_items_html: htmlContent
                   message: `${
                     wishlistData.createdBy || "Someone"
                   } has shared a wishlist with you!`,
+                  wishlist_items_html: htmlContent,
                 };
 
                 return emailjs.send(
@@ -444,6 +452,7 @@ const Createwishlist = ({ giftItem }) => {
       }
     });
   };
+
 
   const deleteWishlist = (wishlistId) => {
     Swal.fire({
@@ -1048,5 +1057,8 @@ const Createwishlist = ({ giftItem }) => {
     </Container>
   );
 };
+
+
+
 
 export default Createwishlist;

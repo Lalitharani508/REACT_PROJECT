@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css';
 
 
-const Header = () => {
+const Dashboard = () => {
   const navigate = useNavigate();
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   
@@ -28,7 +28,7 @@ const Header = () => {
         timer: 2000
       });
       
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       Swal.fire({
         title: 'Error!',
@@ -123,4 +123,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Dashboard;
