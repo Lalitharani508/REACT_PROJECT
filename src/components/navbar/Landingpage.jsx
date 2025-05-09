@@ -3,6 +3,8 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 import { FaRegHeart, FaCheck, FaStar } from 'react-icons/fa';
 import Navbar1 from "./navbar.jsx";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 // import  // Import your existing Navbar
 import './Landing.css'; // You'll need to create this CSS file
