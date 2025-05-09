@@ -10,7 +10,6 @@ import Dashboard from "./components/dashboard/dashboard";
 import GiftIdeas from "./components/giftideas/giftideas";
 import Createwishlist from "./components/wishlists/createwishlist";
 import Settings from "./components/settings/Settings";
-import FooterAlt from "./components/Footer/Footer";
 import Navbar1 from "./components/navbar/navbar";
 import LandingPage from "./components/navbar/Landingpage";
 
@@ -99,7 +98,6 @@ const App = () => {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 
-      {/* Optional: Add <FooterAlt /> if needed */}
     </div>
   );
 };

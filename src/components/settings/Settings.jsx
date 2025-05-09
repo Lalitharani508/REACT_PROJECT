@@ -175,22 +175,22 @@ const Settings = () => {
               Security
             </button>
           </li>
-          <li className={activeSection === 'privacy' ? 'active' : ''}>
+          {/* <li className={activeSection === 'privacy' ? 'active' : ''}>
             <button 
               onClick={() => setActiveSection('privacy')}
               className="settings-nav-link"
             >
               Privacy
             </button>
-          </li>
-          <li className={activeSection === 'notifications' ? 'active' : ''}>
+          </li> */}
+          {/* <li className={activeSection === 'notifications' ? 'active' : ''}>
             <button 
               onClick={() => setActiveSection('notifications')}
               className="settings-nav-link"
             >
               Notifications
             </button>
-          </li>
+          </li> */}
         </ul>
       </div>
     );
@@ -322,149 +322,12 @@ const Settings = () => {
               </Form>
             </div>
             
-            <div className="settings-card">
-              <h4>Two-Factor Authentication</h4>
-              <p className="text-muted">Add an extra layer of security to your account</p>
-              <Form.Check 
-                type="switch"
-                id="two-factor-auth"
-                label="Enable Two-Factor Authentication"
-                className="mb-3"
-              />
-              <Button 
-                variant="outline-primary" 
-                className="settings-outline-btn"
-              >
-                Configure 2FA
-              </Button>
-            </div>
+            
           </div>
         );
         
-      case 'privacy':
-        return (
-          <div className="settings-content">
-            <h2 className="settings-content-title">Privacy Settings</h2>
-            <p className="settings-content-subtitle">Manage your privacy preferences</p>
-            
-            <div className="settings-card">
-              <h4>Wishlist Privacy</h4>
-              <p className="text-muted">Control who can see your wishlists</p>
-              
-              <Form.Group className="mb-3">
-                <Form.Label>Default Wishlist Visibility</Form.Label>
-                <Form.Select aria-label="Default wishlist visibility">
-                  <option value="public">Public - Anyone can see</option>
-                  <option value="friends">Friends Only - Only friends can see</option>
-                  <option value="private">Private - Only you can see</option>
-                </Form.Select>
-              </Form.Group>
-              
-              <Button className="settings-save-btn">
-                Save Privacy Settings
-              </Button>
-            </div>
-            
-            <div className="settings-card">
-              <h4>Activity Visibility</h4>
-              <p className="text-muted">Control what others can see about your activity</p>
-              
-              <Form.Check 
-                type="switch"
-                id="show-activity"
-                label="Show my activity to others"
-                className="mb-2"
-                defaultChecked
-              />
-              
-              <Form.Check 
-                type="switch"
-                id="show-online"
-                label="Show when I'm online"
-                className="mb-3"
-                defaultChecked
-              />
-              
-              <Button className="settings-save-btn">
-                Save Activity Settings
-              </Button>
-            </div>
-          </div>
-        );
-        
-      case 'notifications':
-        return (
-          <div className="settings-content">
-            <h2 className="settings-content-title">Notification Settings</h2>
-            <p className="settings-content-subtitle">Manage how you receive notifications</p>
-            
-            <div className="settings-card">
-              <h4>Email Notifications</h4>
-              <p className="text-muted">Control what emails you receive from us</p>
-              
-              <Form.Check 
-                type="switch"
-                id="email-wishlist"
-                label="Wishlist updates"
-                className="mb-2"
-                defaultChecked
-              />
-              
-              <Form.Check 
-                type="switch"
-                id="email-friend"
-                label="Friend requests and activities"
-                className="mb-2"
-                defaultChecked
-              />
-              
-              <Form.Check 
-                type="switch"
-                id="email-promotions"
-                label="Promotions and newsletters"
-                className="mb-3"
-              />
-              
-              <Button className="settings-save-btn">
-                Save Email Preferences
-              </Button>
-            </div>
-            
-            <div className="settings-card">
-              <h4>Push Notifications</h4>
-              <p className="text-muted">Control what push notifications you receive</p>
-              
-              <Form.Check 
-                type="switch"
-                id="push-wishlist"
-                label="Wishlist updates"
-                className="mb-2"
-                defaultChecked
-              />
-              
-              <Form.Check 
-                type="switch"
-                id="push-friend"
-                label="Friend requests and activities"
-                className="mb-2"
-                defaultChecked
-              />
-              
-              <Form.Check 
-                type="switch"
-                id="push-messages"
-                label="New messages"
-                className="mb-3"
-                defaultChecked
-              />
-              
-              <Button className="settings-save-btn">
-                Save Push Notification Settings
-              </Button>
-            </div>
-          </div>
-        );
-        
+      
+      
       default:
         return null;
     }

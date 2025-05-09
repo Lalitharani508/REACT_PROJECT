@@ -830,7 +830,7 @@ const Createwishlist = ({ giftItem }) => {
                       </div>
                       <div>
                         <Button
-                          variant="outline-primary"
+                          variant="outline-info"
                           size="sm"
                           className="mr-1"
                           onClick={(e) => {
@@ -1030,7 +1030,7 @@ const Createwishlist = ({ giftItem }) => {
               />
             </Form.Group>
 
-            <Form.Group controlId="wishlistPrivacy">
+            {/* <Form.Group controlId="wishlistPrivacy">
               <Form.Label>Privacy Setting</Form.Label>
               <Form.Control
                 as="select"
@@ -1042,7 +1042,7 @@ const Createwishlist = ({ giftItem }) => {
                   Public (anyone with link can see)
                 </option>
               </Form.Control>
-            </Form.Group>
+            </Form.Group> */}
           </Form>
         </Modal.Body>
         <Modal.Footer>
