@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { database } from "../../firebaseconfig";
 import {
-  getDatabase,
   ref,
-  onValue,
   push,
-  update,
   remove,
   set,
   get,
@@ -21,7 +18,7 @@ import {
   Button,
   ListGroup,
   Badge,
-  Spinner,
+  
   Alert,
   Form,
   Modal,
@@ -29,13 +26,10 @@ import {
 import {
   FaPlus,
   FaTrash,
-  FaEdit,
   FaShare,
   FaEye,
-  FaLink,
   FaShoppingBasket,
   FaListUl,
-  // FaGift
 } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
 import { generateEmailHtml } from "../Email_Template/EmailTemplate";
@@ -46,7 +40,6 @@ const Createwishlist = ({ giftItem }) => {
   const [activeWishlist, setActiveWishlist] = useState(null);
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [dbStatus, setDbStatus] = useState("idle");
   const [refreshKey, setRefreshKey] = useState(0);
   const [selectedWishlistId, setSelectedWishlistId] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -58,15 +51,6 @@ const Createwishlist = ({ giftItem }) => {
   }, []);
 
   const auth = getAuth();
-
-  useEffect(() => {
-    const testRef = ref(database, ".info/connected");
-    const unsubscribe = onValue(testRef, (snapshot) => {
-      const connected = snapshot.val();
-      setDbStatus(connected ? "connected" : "disconnected");
-    });
-    return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -214,8 +198,6 @@ const Createwishlist = ({ giftItem }) => {
   };
 
   const addGiftToWishlist = (gift, wishlistId) => {
-    setDbStatus("writing");
-
     const newItem = {
       name: gift.name,
       imageUrl: gift.imageUrl || "",
@@ -234,14 +216,13 @@ const Createwishlist = ({ giftItem }) => {
 
     set(newItemRef, newItem)
       .then(() => {
-        setDbStatus("success");
         const wishlistTitle =
           wishlists.find((list) => list.id === wishlistId)?.title ||
           "your wishlist";
 
         Swal.fire({
           title: "Success!",
-          html: `<p class="animate__animated animate__tada"><FaGift /> ${gift.name} has been added to ${wishlistTitle}</p>`,
+          html: `<p class="animate__animated animate__tada">${gift.name} has been added to ${wishlistTitle}</p>`,
           showConfirmButton: true,
           confirmButtonText: "Show this list",
           customClass: {
@@ -270,7 +251,6 @@ const Createwishlist = ({ giftItem }) => {
         }
       })
       .catch((error) => {
-        setDbStatus("error");
         Swal.fire({
           title: "Error!",
           text: `Failed to add item: ${error.message}`,
@@ -295,7 +275,6 @@ const Createwishlist = ({ giftItem }) => {
       return;
     }
 
-    setDbStatus("writing");
     const newWishlist = {
       owner: currentUser.email,
       title: newWishlistTitle,
@@ -308,7 +287,6 @@ const Createwishlist = ({ giftItem }) => {
 
     set(newWishlistRef, newWishlist)
       .then(() => {
-        setDbStatus("success");
         setShowCreateModal(false);
         setNewWishlistTitle("");
         setNewWishlistDesc("");
@@ -332,7 +310,6 @@ const Createwishlist = ({ giftItem }) => {
         });
       })
       .catch((error) => {
-        setDbStatus("error");
         Swal.fire({
           title: "Error!",
           text: `Failed to create wishlist: ${error.message}`,
@@ -351,7 +328,7 @@ const Createwishlist = ({ giftItem }) => {
   };
 
   const shareWishlist = (wishlistId) => {
-    const htmlContent = generateEmailHtml(wishlistItems)
+    const htmlContent = generateEmailHtml(wishlistItems);
     Swal.fire({
       title: "Share Wishlist",
       input: "email",
@@ -364,7 +341,6 @@ const Createwishlist = ({ giftItem }) => {
       },
     }).then((result) => {
       if (result.isConfirmed && result.value) {
-        setDbStatus("writing");
         const recipientEmail = result.value;
 
         const shareRef = ref(database, `wishlists/${wishlistId}/shares`);
@@ -398,7 +374,6 @@ const Createwishlist = ({ giftItem }) => {
                 );
               })
               .then(() => {
-                setDbStatus("success");
                 Swal.fire({
                   title: "Shared!",
                   text: `Wishlist shared with ${recipientEmail}`,
@@ -409,7 +384,6 @@ const Createwishlist = ({ giftItem }) => {
                 });
               })
               .catch((error) => {
-                setDbStatus("error");
                 Swal.fire({
                   title: "Error!",
                   text: `Failed to share wishlist: ${error.message}`,
@@ -421,7 +395,6 @@ const Createwishlist = ({ giftItem }) => {
               });
           })
           .catch((error) => {
-            setDbStatus("error");
             Swal.fire({
               title: "Error!",
               text: `Failed to fetch wishlist data: ${error.message}`,
@@ -449,12 +422,10 @@ const Createwishlist = ({ giftItem }) => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        setDbStatus("writing");
         const wishlistRef = ref(database, `wishlists/${wishlistId}`);
 
         remove(wishlistRef)
           .then(() => {
-            setDbStatus("success");
             Swal.fire({
               title: "Deleted!",
               text: "Your wishlist has been deleted.",
@@ -470,7 +441,6 @@ const Createwishlist = ({ giftItem }) => {
             setRefreshKey((prevKey) => prevKey + 1);
           })
           .catch((error) => {
-            setDbStatus("error");
             Swal.fire({
               title: "Error!",
               text: `Failed to delete wishlist: ${error.message}`,
@@ -540,7 +510,6 @@ const Createwishlist = ({ giftItem }) => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        setDbStatus("writing");
         const itemRef = ref(
           database,
           `wishlists/${activeWishlist.id}/items/${itemId}`
@@ -548,7 +517,6 @@ const Createwishlist = ({ giftItem }) => {
 
         remove(itemRef)
           .then(() => {
-            setDbStatus("success");
             Swal.fire({
               title: "Deleted!",
               text: "Your item has been deleted.",
@@ -559,7 +527,6 @@ const Createwishlist = ({ giftItem }) => {
             fetchWishlistItems(activeWishlist.id);
           })
           .catch((error) => {
-            setDbStatus("error");
             Swal.fire({
               title: "Error!",
               text: `Failed to delete item: ${error.message}`,
@@ -626,7 +593,7 @@ const Createwishlist = ({ giftItem }) => {
         const priceInput = document.getElementById("swal-input5");
         const priceValue = parseFloat(priceInput.value);
 
-        if (priceInput.value && (isNaN(priceValue) || priceValue < 0) ){
+        if (priceInput.value && (isNaN(priceValue) || priceValue < 0)) {
           Swal.showValidationMessage("Please enter a valid positive price");
           return false;
         }
@@ -660,7 +627,6 @@ const Createwishlist = ({ giftItem }) => {
           return;
         }
 
-        setDbStatus("writing");
         const newItem = {
           name,
           imageUrl: imageUrl || "",
@@ -677,10 +643,9 @@ const Createwishlist = ({ giftItem }) => {
 
         set(newItemRef, newItem)
           .then(() => {
-            setDbStatus("success");
             Swal.fire({
               title: "Success!",
-              html: `<p class="animate__animated animate__tada"><FaGift /> ${name} added to ${activeWishlist.title}</p>`,
+              html: `<p class="animate__animated animate__tada">${name} added to ${activeWishlist.title}</p>`,
               icon: "success",
               customClass: {
                 popup: "animate__animated animate__fadeIn",
@@ -689,7 +654,6 @@ const Createwishlist = ({ giftItem }) => {
             fetchWishlistItems(activeWishlist.id);
           })
           .catch((error) => {
-            setDbStatus("error");
             Swal.fire({
               title: "Error!",
               text: `Failed to add item: ${error.message}`,
@@ -701,41 +665,6 @@ const Createwishlist = ({ giftItem }) => {
           });
       }
     });
-  };
-
-  const renderDbStatusAlert = () => {
-    switch (dbStatus) {
-      case "disconnected":
-        return (
-          <Alert variant="danger" className="animate__animated animate__fadeIn">
-            Database disconnected! Check your connection.
-          </Alert>
-        );
-      case "error":
-        return (
-          <Alert variant="danger" className="animate__animated animate__shakeX">
-            Database operation failed!
-          </Alert>
-        );
-      case "writing":
-        return (
-          <Alert variant="info" className="animate__animated animate__fadeIn">
-            <Spinner animation="border" size="sm" className="mr-2" /> Saving to
-            database...
-          </Alert>
-        );
-      case "success":
-        return (
-          <Alert
-            variant="success"
-            className="animate__animated animate__fadeIn"
-          >
-            Database updated successfully!
-          </Alert>
-        );
-      default:
-        return null;
-    }
   };
 
   if (!currentUser) {
@@ -842,14 +771,7 @@ const Createwishlist = ({ giftItem }) => {
                 </Button>
               </Card.Body>
             </Card>
-          ) : loading ? (
-            <Card className="h-100 shadow-sm">
-              <Card.Body className="text-center d-flex flex-column justify-content-center">
-                <Spinner animation="border" variant="primary" />
-                <p className="mt-3">Loading your wishlist items...</p>
-              </Card.Body>
-            </Card>
-          ) : (
+          ) :   (
             <Card className="h-100 shadow-sm">
               <Card.Header className="bg-primary text-white">
                 <div className="d-flex justify-content-between align-items-center">
