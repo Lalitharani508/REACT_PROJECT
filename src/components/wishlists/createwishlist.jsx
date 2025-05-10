@@ -39,6 +39,7 @@ import {
 } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
 import { generateEmailHtml } from "../Email_Template/EmailTemplate";
+
 const Createwishlist = ({ giftItem }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [wishlists, setWishlists] = useState([]);
@@ -51,15 +52,13 @@ const Createwishlist = ({ giftItem }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newWishlistTitle, setNewWishlistTitle] = useState("");
   const [newWishlistDesc, setNewWishlistDesc] = useState("");
-  const [newWishlistPrivacy, setNewWishlistPrivacy] = useState("private");
 
   useEffect(() => {
-    // Initialize EmailJS with your public key
     emailjs.init("1m2P7j9PCId-S9AVJ");
   }, []);
 
   const auth = getAuth();
-  // Database connection check (same as before)
+
   useEffect(() => {
     const testRef = ref(database, ".info/connected");
     const unsubscribe = onValue(testRef, (snapshot) => {
@@ -69,7 +68,6 @@ const Createwishlist = ({ giftItem }) => {
     return () => unsubscribe();
   }, []);
 
-  // Authentication listener (same as before)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -82,7 +80,6 @@ const Createwishlist = ({ giftItem }) => {
     return () => unsubscribe();
   }, [auth]);
 
-  // Fetch wishlists (same as before)
   useEffect(() => {
     if (!currentUser) {
       setLoading(false);
@@ -136,7 +133,6 @@ const Createwishlist = ({ giftItem }) => {
       });
   }, [currentUser, refreshKey, selectedWishlistId]);
 
-  // Process incoming gift item
   useEffect(() => {
     if (giftItem && currentUser && wishlists.length > 0) {
       showWishlistSelectionModal(giftItem);
@@ -175,7 +171,6 @@ const Createwishlist = ({ giftItem }) => {
         setLoading(false);
       });
   };
-  // console.log(fetchWishlistItems())
 
   const showWishlistSelectionModal = (gift) => {
     if (!wishlists.length) {
@@ -247,7 +242,6 @@ const Createwishlist = ({ giftItem }) => {
         Swal.fire({
           title: "Success!",
           html: `<p class="animate__animated animate__tada"><FaGift /> ${gift.name} has been added to ${wishlistTitle}</p>`,
-          // icon: "success",
           showConfirmButton: true,
           confirmButtonText: "Show this list",
           customClass: {
@@ -307,7 +301,6 @@ const Createwishlist = ({ giftItem }) => {
       title: newWishlistTitle,
       description: newWishlistDesc,
       createdAt: new Date().toISOString(),
-      privacy: newWishlistPrivacy,
     };
 
     const wishlistsRef = ref(database, "wishlists");
@@ -319,7 +312,6 @@ const Createwishlist = ({ giftItem }) => {
         setShowCreateModal(false);
         setNewWishlistTitle("");
         setNewWishlistDesc("");
-        setNewWishlistPrivacy("private");
 
         const newWishlistId = newWishlistRef.key;
         setSelectedWishlistId(newWishlistId);
@@ -328,9 +320,7 @@ const Createwishlist = ({ giftItem }) => {
         Swal.fire({
           title: "Success!",
           html: `<p class="animate__animated animate__tada"><FaListUl /> Wishlist "${newWishlistTitle}" created!</p>`,
-          // icon: "success",
           showConfirmButton: true,
-          // confirmButtonText: "Show my wishlist",
           customClass: {
             popup: "animate__animated animate__fadeIn",
           },
@@ -362,7 +352,6 @@ const Createwishlist = ({ giftItem }) => {
 
   const shareWishlist = (wishlistId) => {
     const htmlContent = generateEmailHtml(wishlistItems)
-    console.log(htmlContent)
     Swal.fire({
       title: "Share Wishlist",
       input: "email",
@@ -378,11 +367,9 @@ const Createwishlist = ({ giftItem }) => {
         setDbStatus("writing");
         const recipientEmail = result.value;
 
-        // First, save to Firebase database.
         const shareRef = ref(database, `wishlists/${wishlistId}/shares`);
         const newShareRef = push(shareRef);
 
-        // Get wishlist data to include in the email
         get(ref(database, `wishlists/${wishlistId}`))
           .then((wishlistSnapshot) => {
             const wishlistData = wishlistSnapshot.val();
@@ -393,16 +380,11 @@ const Createwishlist = ({ giftItem }) => {
               sharedAt: new Date().toISOString(),
             })
               .then(() => {
-                // Now send email notification with EmailJS
                 const templateParams = {
                   to_email: recipientEmail,
                   from_name: wishlistData.createdBy || "A friend",
                   wishlist_name: wishlistData.name || "My Wishlist",
                   wishlist_link: `${window.location.origin}/wishlist/${wishlistId}`,
-                  // message: `${
-                  //   wishlistData.createdBy || "Someone"
-                  // } has shared a wishlist with you!`,
-                  // wishlist_items_html: htmlContent
                   message: `${
                     wishlistData.createdBy || "Someone"
                   } has shared a wishlist with you!`,
@@ -453,7 +435,6 @@ const Createwishlist = ({ giftItem }) => {
     });
   };
 
-
   const deleteWishlist = (wishlistId) => {
     Swal.fire({
       title: "Are you sure?",
@@ -477,7 +458,6 @@ const Createwishlist = ({ giftItem }) => {
             Swal.fire({
               title: "Deleted!",
               text: "Your wishlist has been deleted.",
-              // icon: "success",
               customClass: {
                 popup: "animate__animated animate__tada",
               },
@@ -511,7 +491,7 @@ const Createwishlist = ({ giftItem }) => {
         <div class="text-left">
           <p><strong>Category:</strong> ${item.category || "Not specified"}</p>
           <p><strong>Price:</strong> ${
-            item.price ? `$${item.price.toFixed(2)}` : "Not specified"
+            item.price ? `₹${item.price.toFixed(2)}` : "Not specified"
           }</p>
           <p><strong>Priority:</strong> ${
             item.priority || "Not specified"
@@ -572,7 +552,6 @@ const Createwishlist = ({ giftItem }) => {
             Swal.fire({
               title: "Deleted!",
               text: "Your item has been deleted.",
-              // icon: "success",
               customClass: {
                 popup: "animate__animated animate__tada",
               },
@@ -647,7 +626,7 @@ const Createwishlist = ({ giftItem }) => {
         const priceInput = document.getElementById("swal-input5");
         const priceValue = parseFloat(priceInput.value);
 
-        if (priceInput.value && (isNaN(priceValue) || priceValue < 0)) {
+        if (priceInput.value && (isNaN(priceValue) || priceValue < 0) ){
           Swal.showValidationMessage("Please enter a valid positive price");
           return false;
         }
@@ -775,12 +754,8 @@ const Createwishlist = ({ giftItem }) => {
   return (
     <Container fluid className="my-4 animate__animated animate__fadeIn">
       <Row>
-        {/* Wishlist Selector Column */}
         <Col md={4} className="mb-4">
           <Card className="h-100 shadow-sm">
-            {/* <Card.Header className="bg-primary text-white">
-              <h2 className="mb-0"><FaListUl /> My Wishlists</h2>
-            </Card.Header> */}
             <Card.Body className="d-flex flex-column">
               <Button
                 variant="dark"
@@ -796,7 +771,7 @@ const Createwishlist = ({ giftItem }) => {
                 </Alert>
               ) : (
                 <ListGroup
-                  className="overflow-auto"
+                  className="overflow-info"
                   style={{ maxHeight: "500px" }}
                 >
                   {wishlists.map((wishlist) => (
@@ -813,16 +788,6 @@ const Createwishlist = ({ giftItem }) => {
                           {wishlist.description || "No description"}
                         </small>
                         <div>
-                          <Badge
-                            variant={
-                              wishlist.privacy === "public"
-                                ? "success"
-                                : "secondary"
-                            }
-                            className="mr-2"
-                          >
-                            {wishlist.privacy}
-                          </Badge>
                           <small>
                             {new Date(wishlist.createdAt).toLocaleDateString()}
                           </small>
@@ -860,7 +825,6 @@ const Createwishlist = ({ giftItem }) => {
           </Card>
         </Col>
 
-        {/* Wishlist Items Column */}
         <Col md={8}>
           {!activeWishlist ? (
             <Card className="h-100 shadow-sm">
@@ -943,7 +907,7 @@ const Createwishlist = ({ giftItem }) => {
                                 className="position-absolute"
                                 style={{ top: "10px", right: "10px" }}
                               >
-                                ${item.price.toFixed(2)}
+                                ₹{item.price.toFixed(2)}
                               </Badge>
                             )}
                           </div>
@@ -962,7 +926,6 @@ const Createwishlist = ({ giftItem }) => {
                                 Priority: {item.priority}/5
                               </Badge>
                               <div>
-                                
                                 <Button
                                   variant="outline-primary"
                                   size="sm"
@@ -995,7 +958,6 @@ const Createwishlist = ({ giftItem }) => {
         </Col>
       </Row>
 
-      {/* Create Wishlist Modal */}
       <Modal
         show={showCreateModal}
         onHide={() => setShowCreateModal(false)}
@@ -1029,20 +991,6 @@ const Createwishlist = ({ giftItem }) => {
                 onChange={(e) => setNewWishlistDesc(e.target.value)}
               />
             </Form.Group>
-
-            {/* <Form.Group controlId="wishlistPrivacy">
-              <Form.Label>Privacy Setting</Form.Label>
-              <Form.Control
-                as="select"
-                value={newWishlistPrivacy}
-                onChange={(e) => setNewWishlistPrivacy(e.target.value)}
-              >
-                <option value="private">Private (only you can see)</option>
-                <option value="public">
-                  Public (anyone with link can see)
-                </option>
-              </Form.Control>
-            </Form.Group> */}
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -1057,8 +1005,5 @@ const Createwishlist = ({ giftItem }) => {
     </Container>
   );
 };
-
-
-
 
 export default Createwishlist;
