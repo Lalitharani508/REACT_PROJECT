@@ -67,7 +67,7 @@ const Navbar1 = () => {
                         </Nav.Link> */}
                     </Nav>
                     
-                    <div className="navbar-buttons animate__animated animate__fadeIn animate__delay-2s">
+                    <div className="navbar-buttons animate__animated animate__fadeIn animate__delay-1s">
                         <Button 
                             variant="outline-light" 
                             className="navbar-button signup-btn"

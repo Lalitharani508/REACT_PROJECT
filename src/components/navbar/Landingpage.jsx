@@ -79,6 +79,7 @@ const LandingPage = () => {
               <h3>Create Wishes</h3>
               <p>Easily add your dreams and aspirations to your personal vault</p>
             </Col>
+            
             <Col md={4} className="feature-card animate__animated animate__fadeIn animate__delay-2s">
               <div className="feature-icon">
                 <FaStar />

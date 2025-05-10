@@ -126,6 +126,7 @@
     border-radius: 10px;
     padding: 15px 20px;
     display: flex;
+    
     align-items: center;
     gap: 10px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
@@ -476,3 +477,4 @@
       justify-content: center;
     }
   }
+
