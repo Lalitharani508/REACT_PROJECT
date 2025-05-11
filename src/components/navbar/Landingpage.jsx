@@ -178,7 +178,7 @@ const LandingPage = () => {
           <Row>
             <Col md={4}>
               <h3 className="footer-brand">✨ Wish Vault</h3>
-              <p>Making dreams come true since 2023</p>
+             
             </Col>
             <Col md={4} className="footer-links">
               <h4>Quick Links</h4>
