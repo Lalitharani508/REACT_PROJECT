@@ -13,38 +13,73 @@ import Settings from "./components/settings/Settings";
 import Navbar1 from "./components/navbar/navbar";
 import LandingPage from "./components/navbar/Landingpage";
 
-// ✅ Protected Route Component
+// Protected Route Component with redirect handling
 const ProtectedRoute = ({ user, children }) => {
+  const location = useLocation();
+  
   if (!user) {
-    return <Navigate to="/" />;
+    // Redirect to login and store the attempted URL to redirect back after login
+    return <Navigate to="/" state={{ from: location.pathname }} replace />;
   }
+  
   return children;
 };
 
+// Layout Component for Dashboard pages
+const DashboardLayout = ({ children }) => {
+  return (
+    <div className="dashboard-container">
+      <Dashboard />
+      <div className="dashboard-content">
+        {children}
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
-  const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Handle Firebase auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(author, (currentUser) => {
-      localStorage.setItem("user", JSON.stringify(currentUser));
+      // Update user state
       setUser(currentUser);
+      
+      // Store in localStorage (if needed)
+      if (currentUser) {
+        localStorage.setItem("user", JSON.stringify(currentUser));
+        
+        // Redirect to dashboard if on public route
+        const publicPaths = ["/", "/login", "/signup"];
+        if (publicPaths.includes(location.pathname)) {
+          // Check if there's a saved redirect location
+          const intendedDestination = location.state?.from || "/dashboard";
+          navigate(intendedDestination, { replace: true });
+        }
+      } else {
+        localStorage.removeItem("user");
+        
+        // If on protected route, will redirect via ProtectedRoute component
+      }
+      
       setLoading(false);
     });
+    
     return () => unsubscribe();
-  }, []);
+  }, [navigate, location.pathname]);
 
-  // ✅ Show Navbar only on public routes if not logged in
+  // Determine whether to show navbar
   const publicPaths = ["/", "/login", "/signup"];
-  const showNavbar = publicPaths.includes(location.pathname) && !user;
+  const showNavbar = publicPaths.includes(location.pathname);
 
-  // Optional loading state UI
-  // if (loading) return <div>Loading...</div>;
+  // Loading state
+  // if (loading) {
+  //   return <div className="loading">Loading...</div>;
+  // }
 
   return (
     <div>
@@ -52,17 +87,18 @@ const App = () => {
 
       <Routes>
         {/* Public routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+        <Route path="/signup" element={user ? <Navigate to="/dashboard" replace /> : <Signup />} />
+        <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />
 
         {/* Protected routes */}
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute user={user}>
-              <Dashboard />
-              <Createwishlist />
+              <DashboardLayout>
+                <Createwishlist />
+              </DashboardLayout>
             </ProtectedRoute>
           }
         />
@@ -70,8 +106,9 @@ const App = () => {
           path="/wishlist"
           element={
             <ProtectedRoute user={user}>
-              <Dashboard />
-              <Createwishlist />
+              <DashboardLayout>
+                <Createwishlist />
+              </DashboardLayout>
             </ProtectedRoute>
           }
         />
@@ -79,8 +116,9 @@ const App = () => {
           path="/giftideas"
           element={
             <ProtectedRoute user={user}>
-              <Dashboard />
-              <GiftIdeas />
+              <DashboardLayout>
+                <GiftIdeas />
+              </DashboardLayout>
             </ProtectedRoute>
           }
         />
@@ -88,16 +126,16 @@ const App = () => {
           path="/settings"
           element={
             <ProtectedRoute user={user}>
-              <Dashboard />
-              <Settings />
+              <DashboardLayout>
+                <Settings />
+              </DashboardLayout>
             </ProtectedRoute>
           }
         />
 
         {/* Catch-all route */}
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-
     </div>
   );
 };

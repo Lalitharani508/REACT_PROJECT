@@ -362,7 +362,7 @@ const Createwishlist = ({ giftItem }) => {
                   wishlist_name: wishlistData.name || "My Wishlist",
                   wishlist_link: `${window.location.origin}/wishlist/${wishlistId}`,
                   message: `${
-                    wishlistData.createdBy || "Someone"
+                    wishlistData.createdBy || "You'r Friend"
                   } has shared a wishlist with you!`,
                   wishlist_items_html: htmlContent,
                 };
