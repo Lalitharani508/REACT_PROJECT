@@ -135,7 +135,7 @@ const Login = () => {
                         >
                             {isLoading ? 'Logging in...' : 'Login'}
                         </Button>
-                        <Button onClick={handleguestlogin}>Continue as Guest</Button>
+                        <Button onClick={handleguestlogin} className="w-100">Continue as Guest</Button>
 
                         <Row className="text-center">
                             <Col>

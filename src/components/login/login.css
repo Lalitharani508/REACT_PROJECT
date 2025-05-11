@@ -3,12 +3,20 @@
     background: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient background */
     min-height: 100vh;
     padding: 20px;
+    /* width: 100vw; */
+    /* margin-top: 100px; */
+    padding-top: 40px;
+
+    
 }
 
 .login-card {
+
     width: 100%;
     max-width: 400px;
     border: none;
+    /* margin: 40px; */
+
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */

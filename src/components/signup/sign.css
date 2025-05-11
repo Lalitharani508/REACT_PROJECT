@@ -3,10 +3,12 @@
     background: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient background */
     min-height: 100vh;
     padding: 30px;
+    /* margin-top: 40px; */
+    
 }
 
 .signup-card {
-    width: 70%;
+    width: 100%;
     margin-top: 24px;
     max-width: 400px;
     max-height: 500px;
