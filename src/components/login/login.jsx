@@ -135,11 +135,11 @@ const Login = () => {
                         >
                             {isLoading ? 'Logging in...' : 'Login'}
                         </Button>
-                        <Button onClick={handleguestlogin} className="w-100">Continue as Guest</Button>
+                        <Button onClick={handleguestlogin} className="w-100 guest">Continue as Guest</Button>
 
                         <Row className="text-center">
                             <Col>
-                                <Button variant="info" className="login-link" onClick={() => navigate("/signup")}>
+                                <Button variant="primary" className="login-link" onClick={() => navigate("/signup")}>
                                     SignUp
                                 </Button>
                             </Col>

@@ -125,7 +125,7 @@ const Signup = () => {
 
                         <Row className="text-center">
                             <Col>
-                                <Button variant="link" className="signup-link" onClick={() => navigate("/login")}>
+                                <Button variant="primary" className="signup-link" onClick={() => navigate("/login")}>
                                     Already have an account? Login
                                 </Button>
                             </Col>
