@@ -67,3 +67,6 @@
 .login-link:hover {
     color: #2575fc;
 }
+.login-link{
+    margin-top: 5px;
+}

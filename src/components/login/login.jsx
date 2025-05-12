@@ -139,8 +139,8 @@ const Login = () => {
 
                         <Row className="text-center">
                             <Col>
-                                <Button variant="link" className="login-link" onClick={() => navigate("/signup")}>
-                                    Sign Up
+                                <Button variant="info" className="login-link" onClick={() => navigate("/signup")}>
+                                    SignUp
                                 </Button>
                             </Col>
                             

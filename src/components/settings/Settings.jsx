@@ -23,6 +23,7 @@ const Settings = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", content: "" });
+  const [isGuestUser, setIsGuestUser] = useState(false);
 
   // Form states
   const [emailForm, setEmailForm] = useState({
@@ -42,6 +43,11 @@ const Settings = () => {
     const currentUser = author.currentUser;
     if (currentUser) {
       setUser(currentUser);
+      
+      // Check if user is guest
+      const isGuest = currentUser.email === "guest@gmail.com";
+      setIsGuestUser(isGuest);
+      
       setEmailForm((prev) => ({
         ...prev,
         email: currentUser.email || "",
@@ -73,6 +79,16 @@ const Settings = () => {
     e.preventDefault();
     setIsLoading(true);
     setMessage({ type: "", content: "" });
+
+    // If guest user, show message and return
+    if (isGuestUser) {
+      setMessage({
+        type: "warning",
+        content: "Guest accounts cannot change passwords.",
+      });
+      setIsLoading(false);
+      return;
+    }
 
     const { currentPassword, newPassword, confirmPassword } = passwordForm;
 
@@ -226,14 +242,8 @@ const Settings = () => {
                     disabled
                   />
                 </Form.Group>
-
-                
-
-               
               </Form>
             </div>
-
-            
           </div>
         );
 
@@ -255,6 +265,11 @@ const Settings = () => {
               </Alert>
             )}
 
+            {isGuestUser && (
+              <Alert variant="info">
+                Password changes are not available for guest accounts.
+              </Alert>
+            )}
 
             <div className="settings-card">
               <h4>Change Password</h4>
@@ -282,6 +297,7 @@ const Settings = () => {
                     value={passwordForm.currentPassword}
                     onChange={handlePasswordFormChange}
                     required
+                    disabled={isGuestUser}
                   />
                 </Form.Group>
 
@@ -293,6 +309,7 @@ const Settings = () => {
                     value={passwordForm.newPassword}
                     onChange={handlePasswordFormChange}
                     required
+                    disabled={isGuestUser}
                   />
                 </Form.Group>
 
@@ -304,13 +321,14 @@ const Settings = () => {
                     value={passwordForm.confirmPassword}
                     onChange={handlePasswordFormChange}
                     required
+                    disabled={isGuestUser}
                   />
                 </Form.Group>
 
                 <Button
                   type="submit"
                   className="settings-save-btn"
-                  disabled={isLoading}
+                  disabled={isLoading || isGuestUser}
                 >
                   {isLoading ? "Updating..." : "Update Password"}
                 </Button>
