@@ -72,7 +72,7 @@ const LandingPage = () => {
           </p>
           
           <Row className="feature-cards">
-            <Col md={4} className="feature-card animate__animated animate__fadeIn animate__delay-1s">
+            <Col md={4} className="feature-card animate__fadeIn animate__delay-1s">
               <div className="feature-icon">
                 <FaRegHeart />
               </div>
@@ -92,7 +92,7 @@ const LandingPage = () => {
                 <FaCheck />
               </div>
               <h3>Achievement Tracking</h3>
-              <p>Track your progress and celebrate when wishes come true</p>
+              <p>Track your progress & celebrate when wishes come true</p>
             </Col>
           </Row>
         </Container>
